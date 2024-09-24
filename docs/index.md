@@ -2,6 +2,8 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
+title: CAT Procotol 中文网
+
 hero:
   name: "CAT Procotol 中文网"
   tagline: 全面学习了解 CAT Protocol 的最强学习社区
@@ -10,7 +12,7 @@ hero:
       text: 开始学习
       link: /CAT-Procotol/cat-procotol
   image:
-    src: /assets/cat.png
+    src: /cat.png
     alt: CAT Procotol 中文网
 
 features:

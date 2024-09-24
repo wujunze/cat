@@ -1,6 +1,6 @@
 # 参考实现
 
-CAT 协议有一个开源的参考实现，托管在 [GitHub](https://github.com/CAT-Protocol) 上。它允许用户使用命令行界面（CLI）来部署、铸造和发送 CAT 代币。
+CAT 协议有一个开源的参考实现，托管在 [GitHub](https:/github.com/CAT-Protocol) 上。它允许用户使用命令行界面（CLI）来部署、铸造和发送 CAT 代币。
 
 :::warning `注意`  
 CAT 协议是一个实验性项目，无法保证使用它创建的代币具有任何价值或实用性。用户在使用前应谨慎行事并自行进行研究。
