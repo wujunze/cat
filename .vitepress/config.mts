@@ -7,27 +7,27 @@ function nav(): DefaultTheme.NavItem[] {
         {
           text: "简介",
           link: "/CAT-Procotol/cat-procotol",
-          activeMatch: "/CAT-Procotol/",
+          activeMatch: "/CAT-Procotol/cat-procotol",
         },
         {
           text: "方法概述",
           link: "/CAT-Procotol/overview",
-          activeMatch: "/CAT-Procotol/",
+          activeMatch: "/CAT-Procotol/overview",
         },
         {
           text: "CAT20",
           link: "/CAT-Procotol/cat20",
-          activeMatch: "/CAT-Procotol/",
+          activeMatch: "/CAT-Procotol/cat20",
         },
         {
           text: "CAT721",
           link: "/CAT-Procotol/cat721",
-          activeMatch: "/CAT-Procotol/",
+          activeMatch: "/CAT-Procotol/cat721",
         },
         {
           text: "参考实现",
           link: "/CAT-Procotol/impl",
-          activeMatch: "/CAT-Procotol/",
+          activeMatch: "/CAT-Procotol/impl",
         },
       ],
     }
