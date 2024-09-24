@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: 开始学习
-      link: /CAT-Procotol/index
+      link: /CAT-Procotol/cat-procotol
   image:
     src: /assets/cat.png
     alt: CAT Procotol 中文网
@@ -16,7 +16,7 @@ hero:
 features:
   - title: CAT Procotol中文文档
     details: 契约认证代币（CAT）协议
-    link: /CAT-Procotol/index
+    link: /CAT-Procotol/cat-procotol
   - title: Feature B
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
   - title: Feature C
