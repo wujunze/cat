@@ -51,9 +51,7 @@ export default defineConfig({
   srcDir: "docs",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-
     nav: nav(),
-
     sidebar: {
       "/CAT-Procotol/": {
         base: "/CAT-Procotol/",
