@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "CAT Procotol 中文网"
-  tagline: 全面学习了解CAT Protocol的最强学习社区
+  tagline: 全面学习了解 CAT Protocol 的最强学习社区
   actions:
     - theme: brand
       text: 开始学习
