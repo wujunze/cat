@@ -2,7 +2,7 @@
 
 如果您是比特币开发的新手，我们建议您探索本节中列出的资源。虽然这不是必需的先决条件，但阅读这些指南将帮助您更好地理解关键概念，使您更容易开始开发 sCrypt 智能合约。
 
-如果您已经熟悉比特币，欢迎直接跳到 [基础](../how-to-write-a-contract/basics)部分。
+如果您已经熟悉比特币，欢迎直接跳到 [基础](https://docs.scrypt.io/how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx)部分。
 
 ## 资源
 

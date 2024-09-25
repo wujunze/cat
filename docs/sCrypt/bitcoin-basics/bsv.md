@@ -2,7 +2,7 @@
 
 sCrypt 导出了一个名为 `bsv` 的子模块，这是一个接口，帮助你管理比特币区块链的底层事务，例如创建密钥对、构建、签名和序列化比特币交易等。
 
-在 sCrypt 的上下文中，`bsv` 子模块主要用于管理密钥对和定义自定义交易构建器，正如在[如何编写合约](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx)一节中所演示的那样。
+在 sCrypt 的上下文中，`bsv` 子模块主要用于管理密钥对和定义自定义交易构建器，正如在[如何编写合约](https://docs.scrypt.io/how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx)一节中所演示的那样。
 
 本节的目标是引导你了解使用 `bsv` 子模块的基础知识。
 
@@ -106,7 +106,7 @@ bsv 子模块中可用的哈希函数如下：
 | ripemd160 | RIPEMD-160 哈希算法 | 20 |
 | sha256ripemd160 | SHA256 哈希的 RIPEMD160 哈希。用于比特币地址 | 32 |
 
-但是请注意，这些 [bsv.js 哈希函数](https://github.com/moneybutton/bsv/blob/master/lib/hash.js) 不应与 [sCrypt 的原生哈希函数](../reference/#hashing-functions) 混淆。这些函数不能在智能合约方法中使用。
+但是请注意，这些 [bsv.js 哈希函数](https://github.com/moneybutton/bsv/blob/master/lib/hash.js) 不应与 [sCrypt 的原生哈希函数](ttps://docs.scrypt.io/reference/#hashing-functions) 混淆。这些函数不能在智能合约方法中使用。
 
 ## 构建交易
 
