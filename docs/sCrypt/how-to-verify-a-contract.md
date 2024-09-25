@@ -2,88 +2,87 @@
 sidebar_position: 11
 ---
 
-# How to Verify a Contract
+# 如何验证合约
 
-You will learn how to verify smart contracts on [WhatsOnChain](https://whatsonchain.com/) (WoC), a blockchain explorer.
-By verifying your smart contract on WoC, anyone can view its source code and interact with it confidently. Let's get started!
+你将学习如何在 [WhatsOnChain](https://whatsonchain.com/) 上验证智能合约，这是一个区块链浏览器。
+通过在 WoC 上验证你的智能合约，任何人都可以查看其源代码并放心地与之交互。让我们开始吧！
 
+要开始验证过程，我们首先需要部署一个智能合约。让我们使用 ["Hello World" 教程](https://docs.scrypt.io/tutorials/hello-world.md) 作为示例。
+完成教程后，你应该得到部署交易的 TXID，例如 [`a34d4e45a9108b5b9da4faf4f086e9ef36b79466383bd7a22ff2c7f6a562546c`](https://test.whatsonchain.com/tx/a34d4e45a9108b5b9da4faf4f086e9ef36b79466383bd7a22ff2c7f6a562546c)。
 
-To start with the verification process, we need to first deploy a smart contract. Let us use the ["Hello World" tutorial](./tutorials/hello-world.md) as an example.
-After you complete the tutorial, you should get the TXID of the deployment transaction such as [`a34d4e45a9108b5b9da4faf4f086e9ef36b79466383bd7a22ff2c7f6a562546c`](https://test.whatsonchain.com/tx/a34d4e45a9108b5b9da4faf4f086e9ef36b79466383bd7a22ff2c7f6a562546c).
+如果你在 WoC 上查看交易，你会看到第一个输出包含一个由哈希 `eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def` 标识的脚本，其中包含你的合约，以脚本格式表示。
 
+![img](/sCrypt/how-to-verify-a-contract-01.png)
 
-If you view the transaction on WoC, you'll see that the first output contains a script identified by the hash `eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def`, which contains your contract, in script format.
-
-![](../static/img/verify-tx-out.png)
-
-This hash is referred to as the `scriptHash`. The scriptHash is a `sha256` hash value of the deployed contract's locking script, encoded in a little-endian hex format. It is commonly used as an index by block explorers. You can also get this value locally, via the contract instance's `scriptHash` property:
+这个哈希被称为 `scriptHash`。脚本哈希是部署合约的锁定脚本的 `sha256` 哈希值，以小端十六进制格式编码。它通常用作区块浏览器中的索引。你也可以通过合约实例的 `scriptHash` 属性获取此值：
 
 ```ts
 console.log(instance.scriptHash)
 // eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def
 ```
 
-:::note
-The scriptHash value can vary due to factors like the current property values and the number of times the contract has been updated, leading to inconsistencies in its value.
+:::tip `注意`
+脚本哈希值可能因当前属性值和合约更新的次数而有所不同，导致其值不一致。
 :::
 
-You can submit and verify sCrypt source code that belongs to a specific script hash.
+你可以提交并验证属于特定脚本哈希的 sCrypt 源代码。
 
-![](../static/img/verify-diagram.webp)
+![img](/sCrypt/how-to-verify-a-contract-02.png)
 
-There are two ways to verify it.
+有两种方法可以验证它。
 
-## 1. Using WOC sCrypt Plugin
+## 1. 使用 WoC sCrypt 插件
 
-When viewing the deployed transaction on WOC, click on the `ScriptHash` of the first output.
-It will open a page like this:
+在 WoC 上查看部署的交易时，点击第一个输出的 `ScriptHash`。
+它将打开一个如下页面：
 
-![](../static/img/verify-scripthash.png)
+![img](/sCrypt/how-to-verify-a-contract-03.png)
 
-You will see an `sCrypt` tab.
-Click on it and you will see a simple form that allows you to verify the code for an sCrypt contract:
+你会看到一个 `sCrypt` 标签。
+点击它，你会看到一个简单的表单，允许你验证 sCrypt 合约的代码：
 
-![](../static/img/verify-submit.png)
+![img](/sCrypt/how-to-verify-a-contract-04.png)
 
-In the form you are able to select the version of sCrypt you've used to compile and deploy the contract, along with a text-box in which you need to paste the source code.
+在表单中，你可以选择用于编译和部署合约的 sCrypt 版本，以及一个文本框，在其中你需要粘贴源代码。
 
-![](../static/img/verify-submit-filled.png)
+![img](/sCrypt/how-to-verify-a-contract-05.png)
 
-Now click `Submit`. If the code is correct, you should see something like the following in a few seconds:
+现在点击 `Submit`。如果代码正确，你应该在几秒钟内看到如下内容：
 
-![](../static/img/verify-verified-code.png)
+![img](/sCrypt/how-to-verify-a-contract-06.png)
 
-Congrats, you have verified your first smart contract!
+恭喜，你已经验证了你的第一个智能合约！
 
-Now, every time someone opens the `sCrypt` tab on [the script hash page](https://test.whatsonchain.com/script/eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def), they will see the verified smart contract source code, as well as its constructor parameters when deployed.
+现在，每当有人打开 [脚本哈希页面](https://test.whatsonchain.com/script/eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def) 上的 `sCrypt` 标签时，他们将看到已验证的智能合约源代码，以及在部署时构造函数参数。
 
-## 2. Using CLI
+## 2. 使用 CLI
 
-The same verification process can be done using the [sCrypt CLI](https://www.npmjs.com/package/scrypt-cli).
-You can verify the deployed smart contracts script using the `verify` command:
+你可以使用 [sCrypt CLI](https://www.npmjs.com/package/scrypt-cli) 完成相同的验证过程。
+你可以使用 `verify` 命令验证已部署的智能合约脚本：
 
 ```sh
 npx scrypt-cli verify <scriptHash> <contractPath>
 ```
 
-The first positional argument is the script hash of the deployed contract and the second one is the path to the file which contains the sCrypt smart contract. Note, that the file must also include all the code it depends on, i.e. third party libraries.
+第一个位置参数是已部署合约的脚本哈希，第二个参数是包含 sCrypt 智能合约的文件的路径。
+请注意，文件还必须包含所有依赖的代码，即第三方库。
 
-Using the `network` option, you can specify on which network the contract is deployed. This defaults to `test`, indicating the Bitcoin testnet:
+使用 `network` 选项，你可以指定在哪个网络上部署了合约。这默认为 `test`，表示比特币测试网：
 
 ```sh
 npx scrypt-cli verify --network main <scriptHash> <contractPath>
 ```
 
-You can also specify the version of sCrypt used during verification. By default, the command will use the version specified in `package.json`:
+你可以指定在验证期间使用的 sCrypt 版本。默认情况下，命令将使用 `package.json` 中指定的版本：
 
 ```sh
 npx scrypt-cli verify -V 0.2.0-beta.9 <scriptHash> <contractPath>
 ```
 
-For example, if we would like to verify the same deployed contract as above, we would simply run the following:
+例如，如果我们想验证与上面相同的已部署合约，我们只需运行以下命令：
 
 ```sh
 npx scrypt-cli verify eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def src/contracts/demoproject.ts
 ```
 
-Upon execution, the designated contract code undergoes verification on sCrypt's servers. If successful, the outcome will be [displayed on WoC](https://test.whatsonchain.com/script/eb2f10b8f1bd12527f07a5d05b40f06137cbebe4e9ecfb6a4e0fd8a3437e1def), under the "sCrypt" tab, just like above.
+执行时，指定的合约代码在 sCrypt 的服务器上进行验证。如果成功，结果将显示在 WoC 上，就像上面一样，在 "sCrypt" 标签下。

@@ -80,4 +80,4 @@ sum: 3
 assert(this.ctx.hashOutputs == hash256(outputs), 'hashOutputs mismatch')
 ```
 
-请参考[此指南](advanced/how-to-debug-scriptcontext.md)来调试此类失败。
+请参考[此指南](https://docs.scrypt.io/advanced/how-to-debug-scriptcontext)来调试此类失败。

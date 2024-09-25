@@ -33,13 +33,8 @@ function nav(): DefaultTheme.NavItem[] {
     },
     {
       text: "sCrypt中文文档",
-      items: [
-        {
-          text: "概述",
-          link: "/sCrypt/overview",
-          activeMatch: "/sCrypt/overview",
-        },
-      ],
+      link: "/sCrypt/overview",
+      activeMatch: "/sCrypt",
     }
   ];
 }
@@ -89,14 +84,17 @@ function sidebarSCrypt(): DefaultTheme.SidebarItem[] {
     },
     { text: "如何测试合约", link: "how-to-test-a-contract" },
     { text: "如何调试合约", link: "how-to-debug-a-contract" },
-    { 
-      text: "如何集成前端", 
+    {
+      text: "如何集成前端",
       link: "how-to-integrate-a-frontend/how-to-integrate-a-frontend",
       collapsed: false,
       items: [
         { text: "如何集成 DotWallet", link: "how-to-integrate-a-frontend/how-to-integrate-dotwallet" },
       ]
     },
+    { text: "如何将合约发布到 NPM", link: "how-to-publish-a-contract" },
+    { text: "如何验证合约", link: "how-to-verify-a-contract" },
+    { text: "以太坊开发者的sCrypt", link: "ethereum-devs" },
   ];
 }
 // https://vitepress.dev/reference/site-config

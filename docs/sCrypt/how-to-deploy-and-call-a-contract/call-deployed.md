@@ -92,7 +92,7 @@ async function callIncrementOnChain(
 }
 ```
 
-该函数将已部署智能合约的事务 ID 作为参数，并使用 [`DefaultProvider`](../reference/classes/DefaultProvider) 从区块链中获取事务数据。随后，它使用 [`fromTx`](../how-to-write-a-contract/built-ins.md#fromtx) 函数重建智能合约实例。
+该函数将已部署智能合约的事务 ID 作为参数，并使用 [`DefaultProvider`](https://docs.scrypt.io/reference/classes/DefaultProvider) 从区块链中获取事务数据。随后，它使用 [`fromTx`](../how-to-write-a-contract/built-ins#fromtx) 函数重建智能合约实例。
 
 让我们将整个过程封装在一个主函数中，该函数设计为部署合约并将其值增加五次：
 

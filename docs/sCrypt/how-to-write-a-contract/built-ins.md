@@ -415,11 +415,11 @@ class TimeLock extends SmartContract {
 此机制仅用于确保方法可以在特定时间点之后调用。相反，它不能用于确保方法在特定时间点之前调用。
 :::
 
-要了解更多关于时间锁定的信息，请参阅 [专门文档部分](../advanced/timeLock.md)。
+要了解更多关于时间锁定的信息，请参阅 [专门文档部分](https://docs.scrypt.io/advanced/timeLock.md)。
 
 ### `insertCodeSeparator`
 
-Method `insertCodeSeparator(): void` 在调用时插入 [`OP_CODESEPARATOR`](../advanced/codeseparator.md)。
+Method `insertCodeSeparator(): void` 在调用时插入 [`OP_CODESEPARATOR`](https://docs.scrypt.io/advanced/codeseparator.md)。
 
 ```ts
 export class CodeSeparator extends SmartContract {

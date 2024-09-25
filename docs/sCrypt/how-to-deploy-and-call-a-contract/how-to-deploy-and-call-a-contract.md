@@ -48,7 +48,7 @@ sCrypt 已经有一些内置的提供者：
 
 * `DefaultProvider`: 默认提供者是最安全、最简单的方法开始在比特币上开发，并且它也足够强大，可以在生产环境中使用。它可以在测试网和主网中使用。
 
-* 查看 [可用提供者](../reference/classes/Provider.md#hierarchy).
+* 查看 [可用提供者](https://docs.scrypt.io/reference/classes/Provider.md#hierarchy).
 
 你可以像这样初始化这些提供者：
 
@@ -255,7 +255,7 @@ static unlockTxBuilder(
 
 通常，我们只知道包含实例的[TXID](https://wiki.bitcoinsv.io/index.php/TXID)。我们可以通过以下两个步骤创建一个实例：
 
-1. 使用 TXID，我们通过调用签名者的[connected provider](../reference/classes/Signer.md#connectedprovider)的[getTransaction](../reference/classes/Provider.md#gettransaction)来检索完整的交易。
+1. 使用 TXID，我们通过调用签名者的[connected provider](https://docs.scrypt.io/reference/classes/Signer.md#connectedprovider)的[getTransaction](https://docs.scrypt.io/reference/classes/Provider.md#gettransaction)来检索完整的交易。
 1. 我们可以通过调用 [fromTx()](../how-to-write-a-contract/built-ins.md#fromtx) 从交易中创建一个合约实例。
 
 ```ts

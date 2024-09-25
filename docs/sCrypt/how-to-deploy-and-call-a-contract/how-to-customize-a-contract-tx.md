@@ -80,7 +80,7 @@ class DemoContract extends SmartContract {
 
 ### 自定义
 
-您可以通过调用 `bindTxBuilder` 来自定义合约的公共 `@method` 的事务构建器。第一个参数是公共方法名称，第二个参数是类型为 [MethodCallTxBuilder](../reference/interfaces/MethodCallTxBuilder) 的自定义事务构建器。
+您可以通过调用 `bindTxBuilder` 来自定义合约的公共 `@method` 的事务构建器。第一个参数是公共方法名称，第二个参数是类型为 [MethodCallTxBuilder](https://docs.scrypt.io/reference/interfaces/MethodCallTxBuilder) 的自定义事务构建器。
 
 `MethodCallTxBuilder` 接受三个参数：
 

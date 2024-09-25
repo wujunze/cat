@@ -117,7 +117,7 @@ npx scrypt-cli init
 
 在开始之前，您需要获取合约源文件，作为前端开发人员。
 
-让我们以 [Helloworld 合约](../tutorials/hello-world.md) 为例。将 `helloworld.ts` 复制并粘贴到 `src/contracts` 目录中。
+让我们以 [Helloworld 合约](https://docs.scrypt.io/tutorials/hello-world.md) 为例。将 `helloworld.ts` 复制并粘贴到 `src/contracts` 目录中。
 
 ![img](/sCrypt/how-to-integrate-a-frontend-09.png)
 
@@ -159,7 +159,7 @@ const instance = new Helloworld(sha256(message))
 您将把 [Yours Wallet](https://chromewebstore.google.com/detail/panda-wallet/mlbnicldlpdimbjdcncnklfempedeipj)，一个浏览器扩展钱包，类似于 [MetaMask](https://metamask.io/)，集成到项目中。
 
 :::tip `提示`
-您可以参考此 [指南](../advanced/how-to-add-a-signer.md) 来添加对其他钱包的支持。
+您可以参考此 [指南](https://docs.scrypt.io/advanced/how-to-add-a-signer.md) 来添加对其他钱包的支持。
 :::
 
 要请求访问钱包，您可以使用它的 `requestAuth` 方法。

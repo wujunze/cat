@@ -110,6 +110,6 @@ export class Counter extends SmartContract {
 
 选择无状态还是状态合约取决于区块链应用程序的需求。
 
-如果你的应用程序需要在链上存储持久化数据，有状态合约是合适的。例如，在 [拍卖应用](../tutorials/auction.md) 中，你需要存储当前的最高出价和出价者，以便在有更高出价时将其退还给当前的出价者。
+如果你的应用程序需要在链上存储持久化数据，有状态合约是合适的。例如，在 [拍卖应用](https://docs.scrypt.io/tutorials/auction.md) 中，你需要存储当前的最高出价和出价者，以便在有更高出价时将其退还给当前的出价者。
 
 如果你的应用程序仅验证花费条件而不保留数据，无状态合约是理想的。一个简单的例子是使用签名和公钥在 [P2PKH 合约](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#method-with-signatures) 中进行简单的转账。

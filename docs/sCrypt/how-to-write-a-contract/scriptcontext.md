@@ -142,7 +142,7 @@ class DesignatedReceivers extends SmartContract {
 
 [SIGHASH 类型](https://wiki.bitcoinsv.io/index.php/SIGHASH_flags) 决定了哪些部分的交易包含在 `ScriptContext` 中。
 
-![sighashtypes](../../static/img/sighashtypes.png)
+![sighashtypes](/sCrypt/scriptcontext-02.png)
 
 默认情况下，它是 `SigHash.ALL`，包括所有输入和输出。你可以通过设置 `@method()` 装饰器的参数来自定义它，如下所示：
 
@@ -175,7 +175,7 @@ public increment() {
 | ANYONECANPAY_NONE | 签名自己的输入和没有输出 |
 | ANYONECANPAY_SINGLE | 签名自己的输入和具有相同索引的输出 |
 
-有关更多信息，请参阅 [Sighash 类型](../advanced/sighash-type.md) 部分。
+有关更多信息，请参阅 [Sighash 类型](https://docs.scrypt.io/advanced/sighash-type.md) 部分。
 
 ### 序列化
 
@@ -200,4 +200,4 @@ sighash type of the signature (4-byte little endian)
 
 ### 调试
 
-请参阅 [如何调试 ScriptContext 失败](../advanced/how-to-debug-scriptcontext.md)
+请参阅 [如何调试 ScriptContext 失败](https://docs.scrypt.io/advanced/how-to-debug-scriptcontext.md)
