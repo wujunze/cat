@@ -16,16 +16,15 @@ hero:
     alt: CAT Procotol 中文网
 
 features:
-  - title: CAT Procotol中文文档
+  - icon: 😻
+    title: CAT Procotol中文文档
     details: 契约认证代币（CAT）协议
     link: /CAT-Procotol/cat-procotol
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - icon: 🐉
+    title: sCrypt
+    details: 适用于比特币兼容区块链的全栈 Web3 开发平台
+    link: /sCrypt/overview
 ---
-
-
 <style>
 :root {
   --vp-home-hero-name-color: transparent;

@@ -30,6 +30,16 @@ function nav(): DefaultTheme.NavItem[] {
           activeMatch: "/CAT-Procotol/impl",
         },
       ],
+    },
+    {
+      text: "sCrypt中文文档",
+      items: [
+        {
+          text: "概述",
+          link: "/sCrypt/overview",
+          activeMatch: "/sCrypt/overview",
+        },
+      ],
     }
   ];
 }
@@ -41,6 +51,21 @@ function sidebarCAT(): DefaultTheme.SidebarItem[] {
     { text: "CAT20", link: "cat20" },
     { text: "CAT721", link: "cat721" },
     { text: "参考实现", link: "impl" },
+  ];
+}
+
+function sidebarSCrypt(): DefaultTheme.SidebarItem[] {
+  return [
+    { text: "概述", link: "overview" },
+    { text: "安装指南", link: "installation" },
+    {
+      text: "比特币基础",
+      link: "bitcoin-basics/bitcoin-basics",
+      collapsed: false,
+      items: [
+        { text: "BSV 子模块", link: "bitcoin-basics/bsv" }
+      ]
+    },
   ];
 }
 // https://vitepress.dev/reference/site-config
@@ -56,6 +81,10 @@ export default defineConfig({
       "/CAT-Procotol/": {
         base: "/CAT-Procotol/",
         items: sidebarCAT(),
+      },
+      "/sCrypt/": {
+        base: "/sCrypt/",
+        items: sidebarSCrypt(),
       },
     },
     docFooter: {
