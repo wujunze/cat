@@ -14,7 +14,7 @@ In the context of smart contracts, a time-lock is a feature that restricts the s
 
 For instance, this mechanism could be used to add a withdrawal method to a smart contract. In the event of non-cooperation from other parties, an individual could retrieve their funds locked in the smart contract after some amount of time has passed. This approach is utilized in [cross-chain atomic swaps](https://xiaohuiliu.medium.com/cross-chain-atomic-swaps-f13e874fcaa7), for example.
 
-![](../../static/img/swap1.png)
+![swap1](../../static/img/swap1.png)
 ![](../../static/img/swap2.png)
 *Image Credit: [bcoin](https://bcoin.io/guides/swaps.html)*
 
