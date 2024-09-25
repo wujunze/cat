@@ -13,5 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "vitepress": "^1.3.4"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.3.1"
   }
 }
