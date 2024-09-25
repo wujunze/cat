@@ -66,6 +66,37 @@ function sidebarSCrypt(): DefaultTheme.SidebarItem[] {
         { text: "BSV 子模块", link: "bitcoin-basics/bsv" }
       ]
     },
+    {
+      text: "怎样编写合约",
+      collapsed: false,
+      items: [
+        { text: "基础知识", link: "how-to-write-a-contract/basics" },
+        { text: "内置函数", link: "how-to-write-a-contract/built-ins" },
+        { text: "脚本语境", link: "how-to-write-a-contract/scriptcontext" },
+        { text: "状态合约", link: "how-to-write-a-contract/stateful-contract" },
+      ]
+    },
+    {
+      text: "怎样部署和调用合约",
+      collapsed: false,
+      link: "how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract",
+      items: [
+        { text: "如何自定义合约事务", link: "how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx" },
+        { text: "使用 CLI 部署", link: "how-to-deploy-and-call-a-contract/deploy-cli" },
+        { text: "水龙头", link: "how-to-deploy-and-call-a-contract/faucet" },
+        { text: "与已部署的合约交互", link: "how-to-deploy-and-call-a-contract/call-deployed" },
+      ]
+    },
+    { text: "如何测试合约", link: "how-to-test-a-contract" },
+    { text: "如何调试合约", link: "how-to-debug-a-contract" },
+    { 
+      text: "如何集成前端", 
+      link: "how-to-integrate-a-frontend/how-to-integrate-a-frontend",
+      collapsed: false,
+      items: [
+        { text: "如何集成 DotWallet", link: "how-to-integrate-a-frontend/how-to-integrate-dotwallet" },
+      ]
+    },
   ];
 }
 // https://vitepress.dev/reference/site-config
