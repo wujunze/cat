@@ -34,7 +34,7 @@ assert(this.ctx.hashOutputs == hash256(outputs), 'hashOutputs mismatch')
 
 and you will see the comparison result:
 
-![diffoutputs](../../static/img/diffoutputs.png)
+![diffoutputs](/sCrypt/how-to-debug-scriptcontext-01.png)
 
 
 If the outputs of the transaction is inconsistent with the outputs expected by the contract:

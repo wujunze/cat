@@ -59,7 +59,7 @@ npx scrypt-cli compile --asm
 
 Now, after compiling, the function body will be replaced with script, as could be seen in `artifacts/P2PKH.scrypt`.
 
-![](../../static/img/asm.png)
+![img](/sCrypt/inline-asm-01.png)
 
 
 

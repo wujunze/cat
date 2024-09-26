@@ -13,7 +13,7 @@ In the [contract testing section](../how-to-deploy-and-call-a-contract/how-to-de
 
 * `DefaultProvider`: The default provider is the safest and easiest way to begin developing on Bitcoin, and is also robust enough for use in production. It can be used in testnet as well as mainnet.
 
-* For a full list of providers, see [here](../reference/classes/Provider.md#hierarchy).
+* For a full list of providers, see [here](https://docs.scrypt.io/reference/classes/Provider.md#hierarchy).
 
 ## Implementation
 

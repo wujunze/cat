@@ -29,7 +29,7 @@ verify(signature, publicKey, message) --> true/false
 
 The private key and the public key always appear in pairs, and the public key can be calculated from the private key, but not vice versa. Thus, you will always publish the public key so anyone can verify your signature, and keep the private key safe so only you can provide the correct signature.
 
-![](../../static/img/signing.png)
+![img](/sCrypt/sighash-type-01.png)
 
 Digital signatures are used to represent the authenticity and integrity of a message, since any modification to the message invalidates the signature, causing signature verification to fail. It is also proof that someone owns the private key, since the signature cannot be forged and it can be successfully verified with the corresponding public key only if it is signed with the correct private key.
 
@@ -41,7 +41,7 @@ Using a sighash flag, a Bitcoin signature specifies which parts of a transaction
 
 The image below illustrates what data would be signed using an `ALL` sighash flag. The data being signed is highlighted in green.
 
-![](../../static/img/signingTx.png)
+![img](/sCrypt/sighash-type-02.png)
 
 
 There are three sighash flags: `ALL`, `NONE`, and `SINGLE`.
@@ -62,7 +62,7 @@ In addition, there is a modifier flag `ANYONECANPAY`, which can be combined with
 
 All the six flags can be summarized in the following diagram.
 
-![](../../static/img/sighashtypes.png)
+![img](/sCrypt/sighash-type-03.png)
 
 As described in the [doc](../how-to-write-a-contract/scriptcontext.md#sighash-type) before, different sighash type decides which part of the spending transaction is included in `ScriptContext`. More specifically, it will affect the value of four fields: `hashPrevouts`, `hashSequence`, `hashOutputs`, and `sigHashType`.
 
@@ -157,7 +157,7 @@ Noted that the `@method` [decorator](../how-to-write-a-contract/basics#method-de
 
 The following [transaction](https://test.whatsonchain.com/tx/845f22b728deb23acacbc6f58f23ffde9c3e2be976e08c57f2bdcb417e3eacc5) is a contract calling transaction of `Counter`. As you can see, it contains two outputs: one for the new state, the other for change.
 
-![](../../static/img/counter-call.png)
+![img](/sCrypt/sighash-type-04.png)
 
 ### Advanced Counter
 
@@ -196,7 +196,7 @@ You can check the [complete code here](https://github.com/sCrypt-Inc/boilerplate
 
 The following [transaction](https://test.whatsonchain.com/tx/e06d86f8d8b867c503eca799bb542b5f1d1f81aa75ad00ab4377d65764bef68c) is a contract calling transaction of `AdvancedCounter`. You can see it also contains two outputs, but we only use one output when checking if it hashes to `hashOutputs` in the public method, since we use `SINGLE`.
 
-![](../../static/img/advanced-counter-call.png)
+![img](/sCrypt/sighash-type-05.png)
 
 ### More examples
 

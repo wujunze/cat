@@ -15,13 +15,13 @@ An easier alternative is to leverage `sCrypt` infrastructure service, which trac
 
 Go to [sCrypt.io](https://scrypt.io) to create your free account.
 
-![](../../static/img/homepage.png)
+![img](/sCrypt/how-to-integrate-scrypt-service-01.png)
 
 ### Get API key
 
 Sign in and click `Create` to create a new API key. Click `Copy` to copy it.
 
-![](../../static/img/api-keys.png)
+![img](/sCrypt/how-to-integrate-scrypt-service-02.png)
 
 ## Integration
 
@@ -172,7 +172,7 @@ There is an alternative for listening to contract events in a more secure and ef
 
 First, you need to create a valid webhook in our service before trying to receive any event data. You can manage webhooks on the `webhooks` page of our dashboard.
 
-![](../../static/img/create-webhook.png)
+![img](/sCrypt/how-to-integrate-scrypt-service-03.png)
 
 To create a valid webhook, you need to provide the following information:
 

@@ -10,7 +10,7 @@ As described in [this section](../how-to-deploy-and-call-a-contract/how-to-deplo
 `sCrypt` provides the following signers by default:
 
 1. `TestWallet` : a simple wallet that can hold multiple private keys, with in-memory utxo management. Should only be used for testing.
-1. `PandaSigner`: a signer powered by the popular smart contract wallet [Yours Wallet](https://github.com/yours-org/yours-wallet/). Can be used [in production](../tokens/tutorials/ordinal-lock.md#use-panda-wallet).
+1. `PandaSigner`: a signer powered by the popular smart contract wallet [Yours Wallet](https://github.com/yours-org/yours-wallet/). Can be used [in production](https://docs.scrypt.io/tokens/tutorials/ordinal-lock.md#use-panda-wallet).
 
 ## Implementation
 
