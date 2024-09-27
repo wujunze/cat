@@ -2,34 +2,33 @@
 sidebar_position: 1
 ---
 
-# How to Integrate sCrypt Service
+# 如何集成sCrypt服务
 
-Before interacting with an existing `sCrypt` contract that exists on chain,
-we must create an instance of the contract based on the latest state of the contract on chain. Such an instance can be created by calling the  [`fromTx`](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#create-a-smart-contract-instance-from-a-transaction) method. However, this means your application needs to track and record all contract-related transactions, especially for a stateful contract.
+在与链上现有的`sCrypt`合约进行交互之前，我们必须根据链上合约的最新状态创建合约实例。可以通过调用[`fromTx`](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#create-a-smart-contract-instance-from-a-transaction)方法来创建这样的实例。然而，这意味着您的应用程序需要跟踪和记录所有与合约相关的交易，特别是对于有状态的合约。
 
-An easier alternative is to leverage `sCrypt` infrastructure service, which tracks such transactions, so you can focus on your application logic.
+更简单的选择是利用`sCrypt`基础设施服务，该服务跟踪这类交易，这样您就可以专注于您的应用逻辑。
 
-## Get an API Key
+## 获取 API 密钥
 
-### Create account
+### 创建账户
 
-Go to [sCrypt.io](https://scrypt.io) to create your free account.
+前往 [sCrypt.io](https://scrypt.io) 创建您的免费账户。
 
 ![img](/sCrypt/how-to-integrate-scrypt-service-01.png)
 
-### Get API key
+### 获取 API 密钥
 
-Sign in and click `Create` to create a new API key. Click `Copy` to copy it.
+登录并点击 `Create` 来生成一个新的 API 密钥。点击 `Copy` 来复制它。
 
 ![img](/sCrypt/how-to-integrate-scrypt-service-02.png)
 
-## Integration
+## 集成
 
-Once you have an API key, you can easily integrate sCrypt service into your app by following these simple steps.
+一旦您获得了 API 密钥，您可以通过以下简单步骤轻松将 sCrypt 服务集成到您的应用程序中。
 
-### Step 1: Initialize Client
+### 步骤 1：初始化客户端
 
-You can pass the API key, along with `network`, to the `Scrypt.init` function to initialize an sCrypt client in your app.
+您可以将 API 密钥和 `network` 一起传递给 `Scrypt.init` 函数，在您的应用程序中初始化一个 sCrypt 客户端。
 
 ```ts
 import { Scrypt, bsv } from 'scrypt-ts'
@@ -40,20 +39,20 @@ Scrypt.init({
 })
 ```
 
-### Step 2: Connect a signer with `ScryptProvider`
+### 步骤 2：使用 `ScryptProvider` 连接签名者
 
-Connect signer to `ScryptProvider`, the required [provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider) to use sCrypt service.
+将signer连接到 `ScryptProvider`，这是使用 sCrypt 服务所需的[provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider)。
 
 ```ts
 const signer = new TestWallet(myPrivateKey, new ScryptProvider())
 const counter = new Counter(0n)
-// connect signer
+// 连接signer
 await counter.connect(signer)
 ```
 
-### Step 3: Get Contract ID
+### 步骤 3：获取合约 ID
 
-Each contract is uniquely identified by the transaction that [deploy](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-deployment) it and the output it is in, which we regard as its ID.
+每个合约都由部署它的交易和其所在的输出唯一标识，我们将其视为其 ID。
 
 ```ts
 
@@ -62,18 +61,18 @@ const deployTx = await counter.deploy(balance)
 console.log('contract Counter deployed: ', deployTx.id)
 
 const contractId = {
-    /** The deployment transaction id */
+    /** 部署交易的 ID */
     txId: deployTx.id,
-    /** The output index */
+    /** 输出索引 */
     outputIndex: 0,
 }
 ```
 
-You can usually get the ID of a contract from its creator, who publicizes it so others can interact with it.
+通常您可以从合约的创建者那里获取合约的ID，创建者会公开它以便其他人可以与之交互。
 
-### Step 4: Get Contract Instance
+### 步骤 4：获取合约实例
 
-Once you have the contract ID, you can easily create a contract instance as follows.
+一旦您获得了合约 ID，您可以按照以下步骤轻松创建一个合约实例。
 
 ```ts
 const currentInstance = await Scrypt.contractApi.getLatestInstance(
@@ -81,49 +80,49 @@ const currentInstance = await Scrypt.contractApi.getLatestInstance(
   contractId
 )
 
-// connect signer
+// 连接signer
 await currentInstance.connect(signer)
 ```
-For a stateless contract, the instance points to the deployment tx; for a stateful one, it points to the latest tip in a chain of txs, which sCrypt service tracks automatically.
+对于无状态合约，实例指向部署交易；对于有状态合约，实例指向一系列交易中的最新交易，sCrypt 服务会自动跟踪。
 
-## Interact with the Contract
-Once you have the instance after following the steps above, you can easily read from the contract, write to it, and listen to it.
+## 与合约交互
+在按照上述步骤获得实例后，您可以轻松地从合约中读取数据，向其写入数据，并监听它。
 
-### Read
+### 读取
 
-You read an instance's properties using the dot operator, like any other object.
+您可以使用点运算符读取实例的属性，就像读取任何其他对象一样。
 
 ```ts
-// read @prop count
+// 读取 @prop count
 console.log(counter.count)
 ```
 
 :::note
-Reading does NOT broadcast a transaction to the blockchain.
+读取不会向区块链广播交易。
 :::
 
-### Write
+### 写入
 
-To update a contract instance, you call its public method as [before](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call), which writes to the blockchain by broadcasting a transaction.
+要更新合约实例，您调用其公共方法，如[之前](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call)，通过广播交易写入区块链。
 
 ```ts
-// call the method of current instance to apply the updates on chain
+// 调用当前实例的方法来应用链上的更新
 const { tx } = await currentInstance.methods.incrementOnChain()
 
 console.log(`Counter contract called,  tx: ${tx.id}`)
 ```
 
-### Listen to Events
+### 监听事件
 
-Often, your app needs to be notified when a contract gets called and updated. It is essential to be able to listen to such events in real time that can alert your app whenever something relevant occurs on chain. For example, in your front-end, you can refresh the web page to show the user the latest state of a contract, upon event notifications.
+通常，您的应用程序需要在合约被调用和更新时收到通知。能够实时监听这些事件非常重要，可以在链上发生相关事件时提醒您的应用程序。例如，在您的前端，您可以刷新网页以向用户展示合约的最新状态，以响应事件通知。
 
-With the `sCrypt` service, you can easily subscribe to a contract's events by its contract ID, using ethier websockets (client side) or webhooks (server side) per your requirements.
+通过 `sCrypt` 服务，您可以根据合约 ID 轻松订阅合约的事件，根据您的需求使用 WebSockets（客户端）或 Webhooks（服务器端）。
 
 #### Websockets
 
-To use websockets to listen for contract events, just use the `Scrypt.contractApi.subscribe` dedicated API in our client SDK, which takes two parameters:
+要使用 WebSockets 监听合约事件，只需在我们的客户端 SDK 中使用 `Scrypt.contractApi.subscribe` 专用 API，该 API 接受两个参数：
 
-1. `options: SubscribeOptions<T>`: it includes a contract class, a contract ID, and a optional list of method names monitored.
+1. `options: SubscribeOptions<T>`：包括合约类、合约 ID 和一个可选的监视方法名称列表。
 
 ```ts
 interface SubscribeOptions<T> {
@@ -133,88 +132,88 @@ interface SubscribeOptions<T> {
 }
 ```
 
-If `methodNames` is set, you will be notified only when public functions in the list are called. Otherwise, you will be notified when ANY public function is called.
+如果设置了 `methodNames`，则只有在调用列表中的公共函数时才会收到通知。否则，当调用任何公共函数时都会收到通知。
 
-2. `callback: (event: ContractCalledEvent<T>) => void`: a callback funciton upon receiving notifications.
+2. `callback: (event: ContractCalledEvent<T>) => void`: 在接收到通知时的回调函数。
 
-`ContractCalledEvent<T>` contains relevant information on how the contract is called:
+`ContractCalledEvent<T>` 包含有关合约调用的相关信息：
 
-- `methodName: string`, which public method is called
+- `methodName: string`，调用的公共方法
 
-- `args: SupportedParamType[]`, arguments the public method is called with
+- `args: SupportedParamType[]`，调用公共方法时传入的参数
 
-- `tx: bsv.Transaction`, transaction where contract is called from
+- `tx: bsv.Transaction`，合约调用所在的交易
 
-- `nexts: Array[T]`, includes the new contract instances created by this call. If a stateful contract is called, `nexts` contains the contract instances containing the new state generated by this call. You can read the latest state from the new contract instance to, e.g., display the new state to users. If a stateless contract is called, `nexts` is empty.
+- `nexts: Array[T]`，包括此次调用创建的新合约实例。如果调用了有状态合约，则 `nexts` 包含包含此次调用生成的新状态的合约实例。您可以从新合约实例中读取最新状态，例如，向用户展示新状态。如果调用了无状态合约，则 `nexts` 为空。
 
-Below is an example of listening to events when `incrementOnChain` method is called.
+以下是在调用 `incrementOnChain` 方法时监听事件的示例。
 
 ```ts
 const subscription = Scrypt.contractApi.subscribe({
-  clazz: Counter, // contract class
-  id: contractId, // contract id
+  clazz: Counter, // 合约类
+  id: contractId, // 合约ID
   methodNames: ['incrementOnChain']
 }, (event: ContractCalledEvent<Counter>) => {
-  // callback when receiving a notification
+  // 在接收到通知时的回调函数
   console.log(`${event.methodName} is called with args: ${event.args}`)
 });
 ```
 
 :::note
-When using this API, you do not need any backend services of your own; the code usually runs in your users' browsers. There is a security issue because of exposure of your API key. So it’s highly recommended that you just use it in demo projects for trusted users.
+在使用此 API 时，您无需拥有任何自己的后端服务；代码通常在用户的浏览器中运行。由于 API 密钥的暴露存在安全问题。因此，强烈建议仅在受信任用户的演示项目中使用。
 :::
 
 #### Webhooks
 
-There is an alternative for listening to contract events in a more secure and effective way. Just use our webhook service to push event data to your own backend service.
+有一种更安全、更有效的方式来监听合约事件。只需使用我们的 Webhook 服务将事件数据推送到您自己的后端服务。
 
-##### Webhook Management
+##### Webhook 管理
 
-First, you need to create a valid webhook in our service before trying to receive any event data. You can manage webhooks on the `webhooks` page of our dashboard.
+首先，在尝试接收任何事件数据之前，您需要在我们的服务中创建一个有效的 Webhook。您可以在我们仪表板的 `webhooks` 页面上管理 Webhooks。
 
 ![img](/sCrypt/how-to-integrate-scrypt-service-03.png)
 
-To create a valid webhook, you need to provide the following information:
+创建有效的 Webhook，您需要提供以下信息：
 
 1. **Webhook URL**
 
-This is the specified URL of your backend service for receving the associated event data.
+这是您的后端服务指定的 URL，用于接收相关事件数据。
 
-2. **Network**
+2. **网络**
 
-A webhook can only receive events from a single network. It must be either `testnet` or `mainnet`.
+Webhook 只能接收来自单个网络的事件。它必须是 `testnet` 或 `mainnet` 中的一个。
 
-3. **Contract ID**
+3. **合约 ID**
 
-A webhook must listen to a certain [contract ID](#step-3-get-contract-id). In other words, it will be notified only when this contract is called on chain.
+Webhook 必须监听特定的[合约 ID](#step-3-get-contract-id)。换句话说，只有在链上调用此合约时，它才会收到通知。
 
-Please note that the contract can only be listened to if it is deployed and called using our SDK or services.
+请注意，只有使用我们的 SDK 或服务部署和调用的合约才能被监听。
 
-4. **Contract Artifact**
+4. **合约 Artifact**
 
-A [contract artifact](../how-to-integrate-a-frontend/how-to-integrate-a-frontend.md#2-load-artifact) is also needed to decode call data on chain. You can usually find it in the `artifact` folder of your sCrypt project. It is **required** if the contract ID was newly registered to our service. It becomes optional if it has been registered before. Also, you can only update artifacts registered first by you.
+还需要一个[合约 artifact](../how-to-integrate-a-frontend/how-to-integrate-a-frontend.md#2-load-artifact)来解码链上的调用数据。您通常可以在 sCrypt 项目的 `artifact` 文件夹中找到它。如果合约 ID 是新注册到我们服务中的，则**必需**。如果之前已经注册过，则变为可选。此外，您只能更新您首先注册的 artifact。
 
 
-Besides adding webhooks in dashboard, you can add them **programmatically**.
+除了在仪表板中添加 Webhooks，您还可以**以编程方式**添加它们。
 
 ```js
 
 const fs = require('fs').promises;
 const util = require('util');
 
-// Async function to read a JSON file
+// 读取 JSON 文件的异步函数
 async function readArtifactFromFile(filePath) {
   try {
-    // Read the file using fs.promises.readFile and await for the result
+    // 使用 fs.promises.readFile 读取文件并等待结果
     const data = await fs.readFile(filePath, 'utf8');
 
-    // Parse the JSON data
+    // 解析 JSON 数据
     const jsonData = JSON.parse(data);
 
-    // Return the parsed JSON object
+    // 返回解析后的 JSON 对象
     return jsonData;
   } catch (error) {
-    // Handle errors, e.g., file not found
+    // 处理错误，例如文件未找到
     throw new Error('Error reading JSON file: ' + error.message);
   }
 }
@@ -222,14 +221,14 @@ async function readArtifactFromFile(filePath) {
 
 async function main() {
   try {
-    // Provide the path to your JSON artifact file
+    // 提供您的 JSON artifact 文件路径
     const artifactFilePath = 'path_to_your_json_file.json';
 
-    // Fetch the JSON artifact data from the file
+    // 从文件中获取 JSON artifact 数据
     const artifact = await readArtifactFromFile(artifactFilePath);
 
-    const apiKey = '[Your API key]';
-    const webhookUrl = 'https://api.scrypt.io/webhooks/create'; // Use 'https://testnet-api.scrypt.io' for testnet
+    const apiKey = '[您的 API 密钥]';
+    const webhookUrl = 'https://api.scrypt.io/webhooks/create'; // 用于测试网，请使用 'https://testnet-api.scrypt.io'
 
     const requestBody = {
       url: 'http://127.0.0.1:3005/api/webhooks/test_notify',
@@ -238,7 +237,7 @@ async function main() {
         outputIndex: 0
       },
       desc: "test webhook",
-      artifact: artifact // Use the fetched artifact data here
+      artifact: artifact // 在这里使用获取的 artifact 数据
     };
 
     const response = await fetch(webhookUrl, {
@@ -261,14 +260,14 @@ async function main() {
   }
 }
 
-// Call the main function to start the process
+// 调用 main 函数启动进程
 main();
 
 ```
 
-##### Webhook Request and Response
+##### Webhook 请求和响应
 
-When a contract is called on chain, we will push event data through a http POST request with a body like this to your webhook URL:
+当合约在链上被调用时，我们将通过 HTTP POST 请求将事件数据推送到您的 Webhook URL：
 
 ```json
 {
@@ -302,42 +301,42 @@ When a contract is called on chain, we will push event data through a http POST 
 }
 ```
 
-The request details the `events` data:
+请求详细说明了 `events` 数据：
 
-* `eventType`: The type name of the event. Currently only `utxoSpent` available.
+* `eventType`: 事件的类型名称。目前仅支持 `utxoSpent`。
 
-* `spentUtxo`: The specified utxo of the contract spent in the event.
+* `spentUtxo`: 事件中花费的合约指定的utxo。
 
-* `contractId`: The contract ID that the event belongs to.
+* `contractId`: 事件所属的合约ID。
 
-* `spentBy`: The specified input index of the contract call tx from which the event comes.
+* `spentBy`: 事件来自的合约调用交易的指定输入索引。
 
-* `createdInSpentTxOutputs`: Newly generated contract utxo(s) in the spent tx if it's a stateful contract.
+* `createdInSpentTxOutputs`: 如果是有状态合约，则在花费交易中新生成的合约utxo。
 
-* `id`: Unique event id.
+* `id`: 唯一事件ID。
 
-* `methodName`: The method name of the contract call of the event.
+* `methodName`: 事件的合约调用的方法名称。
 
-* `args`: The argument list of the contract call of the event.
+* `args`: 事件的合约调用的参数列表。
 
-You need to return a HTTP code of 200 for a successful acknowledgement. We will automatically pause the webhook after several unsuccessful deliveries. You need to manually reactivate it on the `webhooks` page before we start pushing notifications to it again. For a single event, there might be more than one notification pushed to the webhook, so make sure you have this situation handled.
+成功确认需要返回 HTTP 状态码 200。在多次投递失败后，我们将自动暂停 Webhook。在我们重新开始向其推送通知之前，您需要在 `webhooks` 页面上手动重新激活它。对于单个事件，可能会向 Webhook 推送多个通知，因此请确保您已处理此情况。
 
-##### Webhook Security
+##### Webhook 安全性
 
-To keep your webhook requests secure, we add a signature header `x-scrypt-signature` for each request by signing the request data with your own API key using the [HMAC-SHA256](https://en.wikipedia.org/wiki/HMAC) algorithm. You can verify it if you want. It can be generated using code like this:
+为了保护您的 Webhook 请求安全，我们通过使用您自己的 API 密钥对请求数据进行签名，使用 [HMAC-SHA256](https://en.wikipedia.org/wiki/HMAC) 算法添加了一个名为 `x-scrypt-signature` 的签名头。如果需要，您可以验证它。可以使用以下代码生成：
 
 ```
 const signature = crypto.createHmac('sha256', apiKey).update(JSON.stringify(body)).digest('hex');
 ```
 
-##### Webhook Limit
+##### Webhook 限制
 
-The number of webhooks that each user can create is limited. The following is the limit on the number of webhooks that users of different plans can create.
+每个用户可以创建的 Webhook 数量是有限的。以下是不同计划用户可以创建的 Webhook 数量限制。
 
 
-| Plan | limt on testnet    | limt on mainnet  |
+| 计划 | 在测试网上的限制    | 在主网上的限制  |
 | ------------- | ------------- | ------------- |
-| Starter  | 10 | 10 |
-| Pro | 100   | 100   |
-| Business | 200   | 200   |
-| Enterprise | 300   | 300   |
+| 初学者  | 10 | 10 |
+| 专业版 | 100   | 100   |
+| 商业版 | 200   | 200   |
+| 企业版 | 300   | 300   |
