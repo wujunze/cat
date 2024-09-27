@@ -2,51 +2,50 @@
 sidebar_position: 9
 ---
 
-# Time Lock
+# 时间锁
 
-## Overview
+## 概述
 
-In this section, we will go over how to create a smart contract, which has a public method, that can only be unlocked once a certain point in time has passed.
+在本节中，我们将介绍如何创建一个智能合约，该合约具有一个公共方法，该方法只能在特定时间点之后解锁。
 
-### What is a time lock?
+### 什么是时间锁？
 
-In the context of smart contracts, a time-lock is a feature that restricts the spending of specific bitcoins until a specified future time or block height is reached. sCrypt offers capabilities to implement these types of time-locks in your smart contracts, providing a mechanism to ensure a transaction won't be included in a block before a certain point in time or block height is reached. In other words, the smart contract's method cannot be successfully invoked until that point in time has passed.
+在智能合约的上下文中，时间锁是一种功能，它限制特定比特币的支出，直到达到指定的未来时间或块高度。sCrypt 提供了在智能合约中实现这些类型的时间锁的机制，提供了一种机制，确保交易不会在达到特定时间点或块高度之前包含在区块链中。换句话说，智能合约的方法不能在特定时间点之后成功调用。
 
-For instance, this mechanism could be used to add a withdrawal method to a smart contract. In the event of non-cooperation from other parties, an individual could retrieve their funds locked in the smart contract after some amount of time has passed. This approach is utilized in [cross-chain atomic swaps](https://xiaohuiliu.medium.com/cross-chain-atomic-swaps-f13e874fcaa7), for example.
+例如，这种机制可以用于向智能合约添加提款方法。在其他各方不合作的情况下，个人可以在一定时间后从智能合约中提取其锁定资金。这种方法在[跨链原子交换](https://xiaohuiliu.medium.com/cross-chain-atomic-swaps-f13e874fcaa7)中得到了应用。
 
-![](../../static/img/swap1.png)
-![](../../static/img/swap2.png)
+![](/sCrypt/timeLock-01.png)
+![](/sCrypt/timeLock-02.png)
 *Image Credit: [bcoin](https://bcoin.io/guides/swaps.html)*
 
-### Implementation
+### 实现
 
-In sCrypt, a time-lock can be enforced by constraining the `locktime` and `sequence` values of the [script execution context](../how-to-write-a-contract/scriptcontext). This context pertains to the execution of the transaction, which includes a call to the smart contract's public method. Thus, if the value is constrained – for example, the `locktime` needs to be above the value `1690236000` (a Unix timestamp) – then this transaction cannot be included into the blockchain until that point in time.
+在 sCrypt 中,可以通过限制[脚本执行上下文](../how-to-write-a-contract/scriptcontext)的 `locktime` 和 `sequence` 值来实施时间锁。这个上下文与交易的执行有关,包括对智能合约公共方法的调用。因此,如果对值进行了限制 - 例如,`locktime` 需要大于 `1690236000`(一个 Unix 时间戳) - 那么这个交易在达到该时间点之前就无法被包含到区块链中。
 
-Note that the value of `locktime` can either be a Unix timestamp or a block height. For this value to be enforced, `sequence` also needs to be set to a value less than `0xffffffff`.
+注意,`locktime` 的值可以是 Unix 时间戳或块高度。为了实施这个值,`sequence` 也需要设置为小于 `0xffffffff` 的值。
 
-sCrypt offers a convenient built-in function `timeLock` to enforce this constraint.
+sCrypt 提供了一个方便的内置函数 `timeLock` 来实施这个约束。
 
 ```ts
-// Time after which our public method can be called.
+// 公共方法可以被调用的时间。
 @prop()
-readonly matureTime: bigint // Can be a timestamp or block height.
+readonly matureTime: bigint // 可以是时间戳或块高度。
 
 // ...
 
 @method()
 public unlock() {
-    // The following assertion ensures that the `unlock` method can
-    // not be successfully invoked until `matureTime` has passed.
+    // 以下断言确保在 `matureTime` 通过之前，`unlock` 方法不能成功调用。
     assert(this.timeLock(this.matureTime), 'time lock not yet expired')
 }
 ```
 
-It is important to note that this mechanism can be employed solely to ensure that a method can be called **after** a specific point in time. In contrast, it cannot be employed to ensure that a method is called **before** a specific point in time. 
+重要的是要注意，这种机制只能用于确保在特定时间点之后调用方法。相反，它不能用于确保在特定时间点之前调用方法。
 
 
-#### Calling
+#### 调用
 
-Upon a method call to the `unlock` method defined above, we need to set the `locktime` value of the transaction that will call the public method. We can do this by simply setting the `locktime` paramater of `MethodCallOptions`.
+在调用上面定义的 `unlock` 方法时，我们需要设置将调用公共方法的事务的 `locktime` 值。我们可以通过简单地设置 `MethodCallOptions` 的 `locktime` 参数来实现这一点。
 
 ```ts
 timeLock.methods.unlock(
@@ -56,7 +55,7 @@ timeLock.methods.unlock(
 )
 ```
 
-Internally this will also set the inputs `sequence` to a value lower than `0xffffffff`. We can also set this value explicitly.
+内部，这还将输入的 `sequence` 设置为小于 `0xffffffff` 的值。我们也可以显式地设置这个值。
 
 
 ```ts
@@ -68,7 +67,7 @@ timeLock.methods.unlock(
 )
 ```
 
-Lastly, if we are using a [custom transaction builder](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md) we need to set these values for the unsigned transaction that we are building there.
+最后，如果我们使用的是 [自定义交易构建器](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md)，我们需要为我们在那里构建的未签名事务设置这些值。
 
 ```ts
 instance.bindTxBuilder('unlock',
@@ -90,12 +89,12 @@ instance.bindTxBuilder('unlock',
 ```
 
 
-## How does it work?
+## 它是如何工作的？
 
-Under the hood, the `timeLock` function asserts that the `sequence` value of our calling transaction is less than `UINT_MAX`. This ensures that the Bitcoin network will enforce the `locktime` value.
+在底层，`timeLock` 函数断言我们的调用事务的 `sequence` 值小于 `UINT_MAX`。这确保了比特币网络将强制执行 `locktime` 值。
 
-Next, it checks if our target time-lock value indicates a block height or a Unix timestamp. If it's using a block height, i.e. the time-lock value is less than 500,000,000, the method also ensures that the `locktime` value of the calling transaction corresponds to a block height.
+接下来，它检查我们的目标时间锁值是否表示块高度或 Unix 时间戳。如果它使用的是块高度，即时间锁值小于 500,000,000，方法还确保调用事务的 `locktime` 值对应于块高度。
 
-Lastly, the method verifies that the value of `locktime` is greater than or equal to the time-lock we have passed as an argument.
+最后，方法验证 `locktime` 的值大于或等于我们作为参数传递的时间锁。
 
-For more information on how the `locktime` and `sequence` values work, please read the [BSV wiki page](https://wiki.bitcoinsv.io/index.php/NLocktime_and_nSequence).
+有关 `locktime` 和 `sequence` 值如何工作的更多信息，请阅读 [BSV wiki 页面](https://wiki.bitcoinsv.io/index.php/NLocktime_and_nSequence)。
