@@ -7,6 +7,7 @@ sidebar_position: 5
 ## 代码分隔符的工作原理
 
 在比特币签名中，签名的内容是 [序列化的 ScriptContext](../how-to-write-a-contract/scriptcontext.md#serialization)，其格式如下：
+
 ![img](/sCrypt/codeseparator-01.png)
 
 Part 5, `scriptCode`, 通常包含整个智能合约，即锁定脚本。唯一的例外是当存在 [OP_CODESEPARATOR](https://wiki.bitcoinsv.io/index.php/OP_CODESEPARATOR) (OCS) 时。当验证签名时，`scriptCode` 是锁定脚本，但删除了从最后一个执行的 OCS 开始的所有内容。
