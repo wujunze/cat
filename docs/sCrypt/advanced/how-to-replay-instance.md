@@ -2,9 +2,9 @@
 sidebar_position: 10
 ---
 
-# How to Replay a Contract Instance to the Latest State
+# 如何将合约实例重放到最新状态
 
-Using [sCrypt Service](./how-to-integrate-scrypt-service.md) and [sCrypt client](./how-to-integrate-scrypt-service.md#step-1-initialize-client), we can effortlessly create a contract instance reflecting the latest state as follows:
+使用[sCrypt Service](./how-to-integrate-scrypt-service.md)和[sCrypt client](./how-to-integrate-scrypt-service.md#step-1-initialize-client)，我们可以轻松创建一个反映最新状态的合约实例，如下所示：
 
 ```ts
 const currentInstance = await Scrypt.contractApi.getLatestInstance(
@@ -13,11 +13,11 @@ const currentInstance = await Scrypt.contractApi.getLatestInstance(
 )
 ```
 
-However, this method is ineffective for smart contracts with states of type [HashedMap](../how-to-write-a-contract/built-ins.md#hashedmap) or [HashedSet](../how-to-write-a-contract/built-ins.md#hashedset). This is because each instance only contains hashed values, not the original ones.
+然而，这种方法对于具有[HashedMap](../how-to-write-a-contract/built-ins.md#hashedmap)或[HashedSet](../how-to-write-a-contract/built-ins.md#hashedset)类型的状态的智能合约无效。这是因为每个实例仅包含哈希值，而不是原始值。
 
-In this section, we'll use [contract CrowdfundReplay](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/crowdfundReplay.ts) located at `src/contracts/crowdfundReplay.ts` as a reference to explain how to replay these contract instances to their latest states.
+在本节中，我们将使用位于`src/contracts/crowdfundReplay.ts`的[contract CrowdfundReplay](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/crowdfundReplay.ts)作为参考，解释如何将这些合约实例重放到其最新状态。
 
-This crowdfund contract features a HashedMap `donators` that records the donors' public key and their respective donation satoshi amounts.
+这个众筹合约包含一个`donators`类型的HashedMap，记录了捐赠者的公钥及其相应的捐赠数量。
 
 ```ts
 export type Donators = HashedMap<PubKey, bigint>
@@ -31,11 +31,11 @@ export class CrowdfundReplay extends SmartContract {
 }
 ```
 
-This contract has three public methods:
+这个合约有三个公共方法：
 
-- `donate` adds an entry to the HashedMap.
-- `refund` removes a specific donator from the map.
-- `collect` destroys the contract without updating any stateful properties.
+- `donate` 将一个条目添加到HashedMap。
+- `refund` 从map中删除一个特定的捐赠者。
+- `collect` 销毁合约而不更新任何状态属性。
 
 ```ts
 export type Donators = HashedMap<PubKey, bigint>
@@ -66,13 +66,13 @@ export class CrowdfundReplay extends SmartContract {
 }
 ```
 
-To replay the contract instance to the latest states, follow these three steps:
+要重放合约实例到最新状态，请按照以下三个步骤操作：
 
-## Step 1. Offchain Helper Functions
+## 第一步. 离线辅助函数
 
-Initially, add helper functions that update stateful properties in a manner **identical** to the public methods.
+首先，添加辅助函数，以与公共方法**相同**的方式更新状态属性。
 
-These functions are defined within the `offchainUpdates` object:
+这些函数在`offchainUpdates`对象中定义：
 
 ```ts
 class CrowdfundReplay extends SmartContract {
@@ -93,17 +93,17 @@ class CrowdfundReplay extends SmartContract {
 ```
 
 :::note
-The object keys must match the public method names precisely.
+对象的键必须与公共方法名称完全匹配。
 :::
 
-In our example, we only need two helper functions since the `collect` method doesn't alter any stateful properties.
+在我们的例子中，我们只需要两个辅助函数，因为`collect`方法不会更改任何状态属性。
 
-## Step 2. Create Instance from Deployment Tx
+## 第二步. 从部署交易创建实例
 
-Retrieve the deployment transaction using the contract ID. Subsequently, [recover](../how-to-write-a-contract/built-ins.md#fromtx) the contract instance from it.
+使用合约ID检索部署交易，然后从部署交易中[恢复](../how-to-write-a-contract/built-ins.md#fromtx)合约实例。
 
 ```ts
-// Recover instance from the deployment transaction
+// 从部署交易中恢复合约实例
 const tx = await provider.getTx(contractId.txId)
 const instance = CrowdfundReplay.fromTx(
     tx,
@@ -114,11 +114,11 @@ const instance = CrowdfundReplay.fromTx(
 )
 ```
 
-**Note**: For more details on the workings of the `fromTx()` and `getTransaction()` functions, refer to the documentation [here](../how-to-write-a-contract/built-ins.md#fromtx).
+**注意**: 有关`fromTx()`和`getTransaction()`函数工作原理的更多详细信息，请参阅[此处](../how-to-write-a-contract/built-ins.md#fromtx)的文档。
 
-## Step 3. Replay Instance to Latest States
+## 第三步. 将实例重放到最新状态
 
-Invoke the `replayToLatest` function to acquire the latest contract instance.
+调用`replayToLatest`函数以获取最新的合约实例。
 
 ```ts
 import { replayToLatest } from 'scrypt-ts'
@@ -128,11 +128,11 @@ import { replayToLatest } from 'scrypt-ts'
 const latestInstance = await replayToLatest(instance, contractId)
 
 if (latestInstance) {
-    // The latest instance is now ready for use.
+    // 最新的实例现在可以使用了。
     ...
 }
 ```
 
-**Note**: If the `replayToLatest()` function yields `null`, it indicates that there have been no state changes for the contract instance. This scenario arises if the contract hasn't been interacted with since its deployment or if all state modifications have been reverted.
+**注意**: 如果`replayToLatest()`函数返回`null`，则表示自合约部署以来没有状态变化。这种情况发生在合约自部署以来没有被交互，或者所有状态修改都被回滚了。
 
 ---
