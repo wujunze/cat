@@ -39,7 +39,7 @@ Scrypt.init({
 })
 ```
 
-### 步骤 2：使用 `ScryptProvider` 连接签名者
+### 步骤 2：使用 `ScryptProvider` 连接signer
 
 将signer连接到 `ScryptProvider`，这是使用 sCrypt 服务所需的[provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider)。
 
@@ -116,7 +116,7 @@ console.log(`Counter contract called,  tx: ${tx.id}`)
 
 通常，您的应用程序需要在合约被调用和更新时收到通知。能够实时监听这些事件非常重要，可以在链上发生相关事件时提醒您的应用程序。例如，在您的前端，您可以刷新网页以向用户展示合约的最新状态，以响应事件通知。
 
-通过 `sCrypt` 服务，您可以根据合约 ID 轻松订阅合约的事件，根据您的需求使用 WebSockets（客户端）或 Webhooks（服务器端）。
+通过 `sCrypt` 服务，您可以根据合约 ID 轻松订阅合约的事件，根据您的需求使用 Websockets（客户端）或 Webhooks（服务器端）。
 
 #### Websockets
 
