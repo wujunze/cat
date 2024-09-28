@@ -56,7 +56,7 @@ export class CodeSeparator extends SmartContract {
 ### 生成签名
 
 当使用 `OP_CODESEPARATOR` 时，我们需要改变获取签名的方式。这是因为通常情况下，签名覆盖整个锁定脚本，而不是删除 OCS 之前的所有内容。我们可以通过传递 `insertCodeSeparator` 的索引作为方法调用参数来指定哪个 `OP_CODESEPARATOR` 划分锁定脚本。
-Let's take a look at an example for the smart contract above:
+让我们来看一个上述智能合约的示例：
 
 ```ts
 // 创建一个签名选项数组，每个签名选项对应一个单独的公钥。
