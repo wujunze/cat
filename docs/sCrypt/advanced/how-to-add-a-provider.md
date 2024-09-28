@@ -160,7 +160,7 @@ export abstract class Provider extends EventEmitter  {
 建议您的provider实现所有`abstract`方法。对于非`abstract`方法，默认实现通常足够。
 
 
-### `Example: WhatsonchainProvider`
+### `例子: WhatsonchainProvider`
 
 让我们通过实现我们自己的provider来走一遍过程。在这个例子中，我们将为[WhatsOnChain](https://whatsonchain.com)（WoC）实现一个provider。
 
