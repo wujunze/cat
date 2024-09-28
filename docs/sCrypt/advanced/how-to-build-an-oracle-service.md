@@ -67,8 +67,8 @@ export function getTimestamp() {
 getTimestamp() {
   const timestamp = getTimestamp();
   const data = Buffer.concat([
-    toBufferLE(V1Controller.MARKER.TIMESTAMP, 1), // api marker, 1 byte
-    toBufferLE(timestamp, 4), // timestamp, 4 bytes LE
+    toBufferLE(V1Controller.MARKER.TIMESTAMP, 1), // api marker, 1 字节
+    toBufferLE(timestamp, 4), // timestamp, 4 字节 LE
   ]);
   const sigResponse = this.rabinService.sign(data);
   return { timestamp, ...sigResponse };
