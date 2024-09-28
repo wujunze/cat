@@ -23,11 +23,6 @@ sidebar_position: 7
 /**
  * 一个`Signer`是一个直接或间接访问私钥的类，可以签署消息和交易，以授权网络执行操作。
  */
-
-
-/**
- * 一个`Signer`是一个直接或间接访问私钥的类，可以签署消息和交易，以授权网络执行操作。
- */
 export abstract class Signer {
 
   provider?: Provider;
@@ -191,7 +186,7 @@ export abstract class Signer {
 
 建议你的signer实现所有`abstract`方法。对于非`abstract`方法，默认实现通常是足够的。
 
-### `Example: PandaSigner`
+### `例子: PandaSigner`
 
 接下来，我们使用[Yours Wallet](https://github.com/yours-org/yours-wallet)作为示例，展示如何实现一个`PandaSigner`。
 
