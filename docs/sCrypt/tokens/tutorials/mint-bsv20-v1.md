@@ -2,23 +2,23 @@
 sidebar_position: 3
 ---
 
-# Tutorial 3: Mint BSV20 Token
+# 教程 3: 铸造 BSV20 代币
 
-## Overview
+## 概述
 
-In this tutorial, we will use contract [HashLock](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts) as an example, to introduce how to mint a BSV20 Token (**version 1**) with [sCrypt](https://scrypt.io/) and transfer it with a Smart Contract.
+在本教程中，我们将使用合约 [HashLock](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts) 作为示例，介绍如何使用 [sCrypt](https://scrypt.io/) 铸造 BSV20 代币（**版本 1**），并使用智能合约转移它。
 
-To enable all these features, you should install `scrypt-ord` as an dependency in your project.
+要启用所有这些功能，您应该在项目中安装 `scrypt-ord` 作为依赖项。
 
 ```bash
 npm install scrypt-ord
 ```
 
-## Contract
+## 合约
 
-The new contract `HashLockFT` is almost the same as the previous [implementation](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts), except two differences.
+新的合约 `HashLockFT` 几乎与之前的 [实现](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts) 相同，除了两个区别。
 
-1. It must be derived from `BSV20V1` instead of `SmartContract`.
+1. 它必须从 `BSV20V1` 而不是 `SmartContract` 继承。
 
 ```ts
 class HashLockFT extends BSV20 {
@@ -26,7 +26,7 @@ class HashLockFT extends BSV20 {
 }
 ```
 
-2. The constructor has extra parameters - `tick`, `max`, `lim`, and `dec` - representing [BSV20 fields](https://docs.1satordinals.com/bsv20#v1-deploy-first-is-first-mode-only).
+2. 构造函数有额外的参数 - `tick`, `max`, `lim`, 和 `dec` - 表示 [BSV20 字段](https://docs.1satordinals.com/bsv20#v1-deploy-first-is-first-mode-only)。
 
 ```ts
 constructor(tick: ByteString, max: bigint, lim: bigint, dec: bigint, hash: Sha256) {
@@ -36,7 +36,7 @@ constructor(tick: ByteString, max: bigint, lim: bigint, dec: bigint, hash: Sha25
 }
 ```
 
-The contract also stores a hash value in the contract, and it will be unlocked successfully when calling the public method `unlock` with the correct message.
+合约还存储一个哈希值，当调用公共方法 `unlock` 并使用正确的消息时，它将成功解锁。
 
 ```ts
 class HashLockFT extends BSV20 {
@@ -52,52 +52,52 @@ class HashLockFT extends BSV20 {
 }
 ```
 
-The base class `BSV20` encapsulated helper functions to handle BSV20 (version 1) tokens. If you want to create your own contract that can interact with BSV20 protocol, derive from it.
+基类 `BSV20` 封装了处理 BSV20（版本 1）代币的帮助函数。如果您想创建自己的合约，可以从中继承。
 
-## Deploy and Mint
+## 部署和铸造
 
-For BSV20 version 1, tokens must be deployed before mint. We first create an instance of contract `HashLockFT`, then call function `deployToken` to deploy the new token, and call `mint` at last to mint tokens into the contract instance.
+对于 BSV20 版本 1，代币必须在铸造之前部署。我们首先创建合约 `HashLockFT` 的实例，然后调用函数 `deployToken` 部署新代币，最后调用 `mint` 将代币铸造到合约实例中。
 
 ```ts
-// BSV20 fields
+// BSV20 字段
 const tick = toByteString('HELLO', true)
 const max = 100n
 const lim = 10n
 const dec = 0n
-// create contract instance
+// 创建合约实例
 const message = toByteString('Hello sCrypt', true)
 const hash = sha256(message)
 const hashLock = new HashLockFT(tick, max, lim, dec, hash)
 ...
-// deploy the new BSV20 token $HELLO
+// 部署新的 BSV20 代币 $HELLO
 await hashLock.deployToken()
-// mint 10 $HELLO into contract instance
+// 铸造 10 $HELLO 到合约实例
 const mintTx = await hashLock.mint(10n)
 ```
 
-Normally, we use a P2PKH address to receive the token, then the token is controlled by a private key the same as the general P2PKH.
+通常，我们使用 P2PKH 地址接收代币，然后代币由与普通 P2PKH 相同的私钥控制。
 
-In this example, the token is mint to a contract instance, it is controlled by the smart contract, which means it can only be transferred when the hash lock is unlocked.
+在这个例子中，代币被铸造到合约实例中，它由智能合约控制，这意味着只有在哈希锁被解锁时才能转移。
 
-## Transfer Token
+## 转移代币
 
-For now, the contract instance holds the token and we try to transfer it to a P2PKH address.
+目前，合约实例持有代币，我们尝试将其转移到一个 P2PKH 地址。
 
-### Step 1. Create Receiver Instance
+### 第一步：创建接收者实例
 
-Class `BSV20P2PKH` represents a P2PKH address that can hold BSV20 version 1 tokens. Its constructor takes BSV20 fields and an receiving address as parameters.
+类 `BSV20P2PKH` 表示一个可以持有 BSV20 版本 1 代币的 P2PKH 地址。它的构造函数接受 BSV20 字段和一个接收地址作为参数。
 
 ```ts
 const alice = new BSV20V1P2PKH(tick, max, lim, dec, addressAlice)
 const bob = new BSV20V1P2PKH(tick, max, lim, dec, addressBob)
 ```
 
-### Step 2. Call the Contract
+### 第二步：调用合约
 
-Just as other [contract calling](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) methods we introduced before, we call the public method `unlock` of `HashLockFT` as follows.
+就像我们之前介绍的 [合约调用](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) 方法一样，我们调用 `HashLockFT` 的公共方法 `unlock` 如下。
 
 ```ts
-// Call the contract
+// 调用合约
 const { tx: transferTx } = await hashLock.methods.unlock(message, {
     transfer: [
         {
@@ -112,24 +112,24 @@ const { tx: transferTx } = await hashLock.methods.unlock(message, {
 } as OrdiMethodCallOptions<HashLockFT>)
 ```
 
-This code will create a transaction that transfers 2 tokens to `alice` and 5 to `bob`.
+这段代码将创建一个转移 2 个代币到 `alice` 和 5 个代币到 `bob` 的事务。
 
-The default transaction builder will automatically add a token change output on the transaction. In this example, it will automatically add a token change output with 3 tokens, paying to the default address of the instance connected signer. You can also specify the token change address by passing the value to the key `tokenChangeAddress` of struct `OrdiMethodCallOptions`.
+默认的事务生成器将自动在事务中添加代币变更输出。在这个例子中，它将自动添加一个代币变更输出，支付给连接的签名者实例的默认地址。您还可以通过传递值到 struct `OrdiMethodCallOptions` 的键 `tokenChangeAddress` 来指定代币变更地址。
 
-Execute command `npx ts-node tests/examples/mintBSV20.ts` to run this example.
+执行命令 `npx ts-node tests/examples/mintBSV20.ts` 来运行这个例子。
 
-![](../../../static/img/mint-bsv20.png)
+![](/sCrypt/mint-bsv20-v1-01.png)
 
-Then you can check your token transfer details on the explorer.
+然后，您可以在区块浏览器上检查您的代币转移详情。
 
-![](../../../static/img/mint-bsv20-mint-tx.png)
+![](/sCrypt/mint-bsv20-v1-02.png)
 
-![](../../../static/img/mint-bsv20-transfer-tx.png)
+![](/sCrypt/mint-bsv20-v1-03.png)
 
-The UTXO model is a powerful feature of BSV20, we can send tokens to multiple receivers in a single transaction, allowing us to create complex and efficient transactions.
+UTXO 模型是 BSV20 的一个强大特性，我们可以在单个事务中将代币发送给多个接收者，允许我们创建复杂且高效的代币转移。
 
-## Conclusion
+## 结论
 
-Great! You have finished the tutorial on how to mint and transfer the BSV20 Token with a Smart Contract.
+太好了！您已经完成了如何使用智能合约铸造和转移 BSV20 代币的教程。
 
-The full complete [contract](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/hashLockFT.ts) and [example](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/examples/mintBSV20.ts) can be found in sCrypt's [repository](https://github.com/sCrypt-Inc/scrypt-ord).
+完整的 [合约](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/hashLockFT.ts) 和 [示例](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/examples/mintBSV20.ts) 可以在 sCrypt 的 [仓库](https://github.com/sCrypt-Inc/scrypt-ord) 中找到。

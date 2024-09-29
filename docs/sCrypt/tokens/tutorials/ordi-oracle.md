@@ -2,24 +2,24 @@
 sidebar_position: 5
 ---
 
-# Tutorial 5: Ordinals Oracle
+# 教程 5: Ordinals 预言机
 
-## Overview
-Bitcoin smart contracts can decide whether satoshis in a UTXO are valid, but cannot directly determine whether the [1SatOrdinals](https://docs.1satordinals.com/) tokens in a UTXO are valid. By inspecting a UTXO, a contract can know how many satoshis are in it since they are validated by miners on chain. However, the contract cannot be sure how many Ordinals tokens are in it or if it contains a specific NFT, since they are validated by an external indexer off chain outside of miners. In many practical applications, verifying the Ordinals tokens carried in certain transaction inputs is necessary, such as token swap and token sale. [Oracles](../../tutorials/oracle.md) must be introduced to provide additional verification for the authenticity and integrity of the Ordinals tokens required when calling a contract.
+## 概述
+比特币智能合约可以决定UTXO中的satoshis是否有效，但不能直接确定UTXO中的[1SatOrdinals](https://docs.1satordinals.com/)代币是否有效。通过检查UTXO，合约可以知道其中有多少satoshis，因为它们是由矿工在链上验证的。然而，合约无法确定其中有多少Ordinals代币或是否包含特定的NFT，因为它们是由链外的外部索引器验证的，而不是矿工。在许多实际应用中，验证交易输入中携带的Ordinals代币是必要的，例如代币交换和代币销售。必须引入[预言机](../../tutorials/oracle.md)来为调用合约时所需的Ordinals代币的真实性和完整性提供额外的验证。
 
-This tutorial will introduce how to use the [WitnessOnChain](https://api.witnessonchain.com) oracle to validate transaction inputs referencing UTXOs containing Ordinals NFTs and BSV20 tokens.
+本教程将介绍如何使用[WitnessOnChain](https://api.witnessonchain.com)预言机来验证引用包含Ordinals NFT和BSV20代币的UTXO的交易输入。
 
 ## WitnessOnChain API
 
-WitnessOnChain provides an [API](https://api.witnessonchain.com/#/v1/V1Controller_getInscription) to get inscription details from an outpoint.
+WitnessOnChain提供了一个[API](https://api.witnessonchain.com/#/v1/V1Controller_getInscription)来从一个outpoint获取inscription详情。
 
 ```
 https://api.witnessonchain.com/v1/inscription/bsv/{network}/outpoint/{txid}/{vout}
 ```
 
-The structure of the signed message in response is as follows:
+响应中签名的消息结构如下：
 
-| Name      | Type       | Bytes | Description                                  |
+| 名称      | 类型       | 字节数 | 描述                                       |
 | --------- | ---------- | ----- | -------------------------------------------- |
 | marker    | bigint     | 1     | api marker, always be 4n                     |
 | timestamp | bigint     | 4     | timestamp, little-endian                     |
@@ -29,16 +29,16 @@ The structure of the signed message in response is as follows:
 | amt       | bigint     | 8     | token amount, little endian                  |
 | id        | ByteString | >=66  | inscription id                               |
 
-According to this, we can define a customized type `Msg` and a helper parser function.
+根据这个结构，我们可以定义一个自定义类型 `Msg` 和一个辅助解析函数。
 
 ```ts
 type Msg = {
-    marker: bigint // 1 byte, api marker
-    timestamp: bigint // 4 bytes LE
-    network: bigint // 1 byte, 1 for mainnet, 0 for testnet
-    outpoint: ByteString // 36 bytes, txid 32 bytes LE + vout 4 bytes LE
-    fungible: bigint // 1 byte, token type, 1 for BSV20, 0 for NFT
-    amt: bigint // 8 bytes LE
+    marker: bigint // 1 字节, api marker
+    timestamp: bigint // 4 字节 LE
+    network: bigint // 1 字节, 1 为 mainnet, 0 为 testnet
+    outpoint: ByteString // 36 字节, txid 32 字节 LE + vout 4 字节 LE
+    fungible: bigint // 1 字节, token type, 1 for BSV20, 0 for NFT
+    amt: bigint // 8 字节 LE
     id: ByteString
 }
 
@@ -56,13 +56,13 @@ static parseMsg(msg: ByteString): Msg {
 }
 ```
 
-## Use in a Contract
+## 在合约中使用
 
-In this example, we implement a demo contract, which can only be successfully called when the second input (that is input #1) of the spending transaction contains a specific amount of a certain BSV20 token.
+在这个例子中，我们实现了一个合约，当交易中的第二个输入（即输入 #1）包含特定数量的特定 BSV20 代币时，只能成功调用。
 
-![](../../../static/img/oracle-demo-bsv20-unlocking-tx.png)
+![](/sCrypt/ordi-oracle-01.png)
 
-To verify the oracle signed message, we should add oracle's public key to the contract. To record the specific BSV20 token and amount, we also need to add another two properties to it.
+为了验证预言机签名的消息，我们应该将预言机的公钥添加到合约中。为了记录特定的 BSV20 代币和数量，我们还需要添加另外两个属性。
 
 ```ts
 export class OracleDemoBsv20 extends SmartContract {
@@ -78,27 +78,27 @@ export class OracleDemoBsv20 extends SmartContract {
 }
 ```
 
-### Methods
+### 方法
 
-The public method `unlock` requires three parameters:
+公共方法 `unlock` 需要三个参数：
 
-- `msg`, oracle's signed message,
-- `sig`, oracle's signature
-- `tokenInputIndex`, to mark which input is the token input
+- `msg`, 预言机签名的消息，
+- `sig`, 预言机的签名
+- `tokenInputIndex`, 标记哪个输入是代币输入
 
 ```ts
 @method()
 public unlock(msg: ByteString, sig: RabinSig, tokenInputIndex: bigint) {
-    // retrieve token outpoint from prevouts
+    // 从 prevouts 中检索代币 outpoint
     const outpoint = slice(this.prevouts, tokenInputIndex * 36n, (tokenInputIndex + 1n) * 36n)
-    // verify oracle signature
+    // 验证预言机签名
     assert(
         WitnessOnChainVerifier.verifySig(msg, sig, this.oraclePubKey),
         'Oracle sig verify failed.'
     )
-    // decode oracle data
+    // 解码预言机数据
     const message = OracleDemoBsv20.parseMsg(msg)
-    // validate data
+    // 验证数据
     assert(message.marker == 4n, 'incorrect oracle message type')
     assert(message.network == 0n, 'incorrect network')
     assert(message.outpoint == outpoint, 'incorrect token outpoint')
@@ -106,14 +106,14 @@ public unlock(msg: ByteString, sig: RabinSig, tokenInputIndex: bigint) {
     assert(message.amt >= this.amt, 'incorrect token amount')
     assert(message.id == this.inscriptionId, 'incorrect inscription id')
 
-    // do other validations ...
+    // 其他验证 ...
 }
 ```
 
-We first retrieve the token outpoint from `this.prevouts`. We parse the message signed by the oracle and verify it against the outpoint. Now we can use the token information confidently in the remaining contract code, like amount and id.
+我们首先从 `this.prevouts` 中检索代币 outpoint。我们解析预言机签名的消息并验证它与 outpoint。现在我们可以自信地在剩余的合约代码中使用代币信息，例如数量和 id。
 
-## Conclusion
+## 结论
 
-Congratulations! You have successfully completed a tutorial about how to validate 1SatOrdinals inputs with Oracle.
+恭喜！您已经成功完成了一个教程，关于如何使用预言机验证 1SatOrdinals 输入。
 
-The full example [contract](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/oracleDemoBsv20.ts) and its corresponding [test](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/oracleDemoBsv20.test.ts) can be found in our [boilerplate repo](https://github.com/sCrypt-Inc/boilerplate).
+完整的示例 [合约](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/oracleDemoBsv20.ts) 及其对应的 [测试](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/oracleDemoBsv20.test.ts) 可以在我们的 [boilerplate 仓库](https://github.com/sCrypt-Inc/boilerplate) 中找到。

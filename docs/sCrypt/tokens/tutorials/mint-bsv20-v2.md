@@ -2,23 +2,23 @@
 sidebar_position: 2
 ---
 
-# Tutorial 2: Mint BSV21 Token
+# 教程 2：铸造 BSV21 代币
 
-## Overview
+## 概述
 
-In this tutorial, we will use contract [HashLock](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts) as an example, to introduce how to mint a BSV21 Token with [sCrypt](https://scrypt.io/) and transfer it with a Smart Contract.
+在本教程中，我们将使用合约 [HashLock](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts) 作为示例，介绍如何使用 [sCrypt](https://scrypt.io/) 铸造 BSV21 代币，并使用智能合约转移它。
 
-To enable all these features, you should install `scrypt-ord` as an dependency in your project.
+要启用所有这些功能，您应该在项目中安装 `scrypt-ord` 作为依赖项。
 
 ```bash
 npm install scrypt-ord
 ```
 
-## Contract
+## 合约
 
-The new contract `HashLockFTV2` is almost the same as the previous [implementation](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts), except two differences.
+新的合约 `HashLockFTV2` 几乎与之前的 [实现](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/hashLock.ts) 相同，除了两个区别。
 
-1. It must be derived from `BSV21` instead of `SmartContract`.
+1. 它必须从 `BSV21` 继承，而不是 `SmartContract`。
 
 ```ts
 class HashLockFTV2 extends BSV21 {
@@ -26,7 +26,7 @@ class HashLockFTV2 extends BSV21 {
 }
 ```
 
-2. The constructor has extra parameters - `id`, `sym`, `max`, and `dec` - representing [BSV20 V2 fields](https://docs.1satordinals.com/bsv20#v2-deploy+mint-tickerless-mode).
+2. 构造函数有额外的参数 - `id`、`sym`、`max` 和 `dec` - 代表 [BSV20 V2 字段](https://docs.1satordinals.com/bsv20#v2-deploy+mint-tickerless-mode)。
 
 ```ts
 constructor(id: ByteString, sym: ByteString, max: bigint, dec: bigint, hash: Sha256) {
@@ -36,7 +36,7 @@ constructor(id: ByteString, sym: ByteString, max: bigint, dec: bigint, hash: Sha
 }
 ```
 
-The contract also stores a hash value in the contract, and it will be unlocked successfully when calling the public method `unlock` with the correct message.
+合约还存储一个哈希值，当调用公共方法 `unlock` 并使用正确的消息时，它将成功解锁。
 
 ```ts
 export class HashLockFTV2 extends BSV21 {
@@ -52,49 +52,49 @@ export class HashLockFTV2 extends BSV21 {
 }
 ```
 
-The base class `BSV21` encapsulated helper functions to handle BSV20 V2 tokens. If you want to create your own contract that can interact with BSV20 V2 protocol, derive from it.
+基类 `BSV21` 封装了处理 BSV20 V2 代币的帮助函数。如果您想创建自己的合约，可以与 BSV20 V2 协议进行交互，请从它继承。
 
-## Deploy Token
+## 铸造代币
 
-We first create an instance of contract `HashLockFTV2`, then call function `deployToken` to deploy the new token.
+我们首先创建合约 `HashLockFTV2` 的实例，然后调用函数 `deployToken` 来铸造新的代币。
 
 ```ts
-// BSV20 V2 fields
+// BSV20 V2 字段
 const sym = toByteString('sCrypt', true)
 const max = 10n
 const dec = 0n
-// create contract instance
+// 创建合约实例
 const message = toByteString('Hello sCrypt', true)
 const hash = sha256(message)
 const hashLock = new HashLockFTV2(toByteString(''), sym, max, dec, hash)
 ...
-// deploy the new BSV20V2 token
+// 部署新的 BSV20V2 代币
 const tokenId = await hashLock.deployToken()
 ```
 
-Normally, we use a P2PKH address to receive the token, then the token is controlled by a private key the same as the general P2PKH.
+通常，我们使用 P2PKH 地址接收代币，然后代币由与一般 P2PKH 相同的私钥控制。
 
-In this example, the token is mint to a contract instance, it is controlled by the smart contract, which means it can only be transferred when the hash lock is unlocked.
+在这个例子中，代币被铸造到合约实例中，由智能合约控制，这意味着只有在哈希锁被解锁时才能转移。
 
-## Transfer Token
+## 转移代币
 
-For now, the contract instance holds the token and we try to transfer it to a P2PKH address.
+现在，合约实例持有代币，我们尝试将其转移到一个 P2PKH 地址。
 
-### Step 1. Create Receiver Instance
+### 第一步 创建接收者实例
 
-Class `BSV20V2P2PKH` represents a P2PKH address that can hold BSV21 tokens. Its constructor takes BSV20 V2 fields and an receiving address as parameters.
+Class `BSV20V2P2PKH` 表示一个可以持有 BSV21 代币的 P2PKH 地址。它的构造函数接受 BSV20 V2 字段和一个接收地址作为参数。
 
 ```ts
 const alice = new BSV20V2P2PKH(toByteString(tokenId, true), sym, max, dec, addressAlice )
 const bob = new BSV20V2P2PKH(toByteString(tokenId, true), sym, max, dec, addressBob)
 ```
 
-### Step 2. Call the Contract
+### 第二步 调用合约
 
-Just as other [contract calling](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) methods we introduced before, we call the public method `unlock` of `HashLockFTV2` as follows.
+就像我们之前介绍的 [合约调用](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) 方法一样，我们调用 `HashLockFTV2` 的公共方法 `unlock` 如下。
 
 ```ts
-// Call the contract
+// 调用合约
 const { tx: transferTx } = await hashLock.methods.unlock(message, {
     transfer: [
         {
@@ -109,22 +109,22 @@ const { tx: transferTx } = await hashLock.methods.unlock(message, {
 } as OrdiMethodCallOptions<HashLockFTV2>)
 ```
 
-This code will create a transaction that transfers 2 tokens to `alice` and 5 to `bob`.
+这段代码将创建一个转移 2 个代币到 `alice` 和 5 个代币到 `bob` 的事务。
 
-The default transaction builder will automatically add a token change output on the transaction. In this example, it will automatically add a token change output with 3 tokens, paying to the default address of the instance connected signer. You can also specify the token change address by passing the value to the key `tokenChangeAddress` of struct `OrdiMethodCallOptions`.
+默认的事务生成器将自动在事务中添加代币变更输出。在这个例子中，它将自动添加一个代币变更输出，支付给连接的签名者实例的默认地址。您还可以通过传递值到 struct `OrdiMethodCallOptions` 的键 `tokenChangeAddress` 来指定代币变更地址。
 
-Execute command `npx ts-node tests/examples/mintBSV21.ts` to run this example.
+执行命令 `npx ts-node tests/examples/mintBSV21.ts` 运行这个例子。
 
-![](../../../static/img/mint-bsv20v2.png)
+![](/sCrypt/mint-bsv20-v2-01.png)
 
-Then you can check your token transfer details on the explorer.
+然后，您可以在区块浏览器上检查您的代币转移详情。
 
-![](../../../static/img/mint-bsv20v2-mint-tx.png)
+![](/sCrypt/mint-bsv20-v2-02.png)
 
-![](../../../static/img/mint-bsv20v2-transfer-tx.png)
+![](/sCrypt/mint-bsv20-v2-03.png)
 
-## Conclusion
+## 结论
 
-Great! You have finished the tutorial on how to mint and transfer the BSV20 V2 Token with a Smart Contract.
+太好了！您已经完成了如何使用智能合约铸造和转移 BSV20 V2 代币的教程。
 
-The full complete [contract](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/hashLockFTV2.ts) and [example](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/examples/mintBSV20V2.ts) can be found in sCrypt's [repository](https://github.com/sCrypt-Inc/scrypt-ord).
+完整的 [合约](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/hashLockFTV2.ts) 和 [示例](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/examples/mintBSV20V2.ts) 可以在 sCrypt 的 [仓库](https://github.com/sCrypt-Inc/scrypt-ord) 中找到。

@@ -1,28 +1,28 @@
 ---
-title: "Transfer Existing FT to a Smart Contract"
+title: "将现有的 FT 转移到智能合约"
 sidebar_position: 1
 ---
 
-Suppose you'd like to unlock existing UTXOs that carry a FT to a smart contract.
+假设你想解锁一个现有的 UTXO，它携带一个 FT 到智能合约。
 
-If you would like to unlock a single specific UTXO, you can do the following:
+如果你想解锁一个特定的 UTXO，你可以这样做：
 
 ```ts
 HashLockFT.loadArtifact();
 ...
-// Initialize recipient smart contract.
+// 初始化接收合约。
 const message = toByteString('super secret', true);
 const hash = sha256(message);
 const recipient = new HashLockFT(tick, max, lim, dec, hash);
 await recipient.connect(getDefaultSigner());
 
-// Create P2PKH object from an UTXO
-// NOTE: You can not use BSV21P2PKH.getLatestInstance for BSV-20, it only works for NFTs.
+// 从 UTXO 创建 P2PKH 对象
+// 注意：你不能使用 BSV21P2PKH.getLatestInstance 用于 BSV-20，它只适用于 NFT。
 const utxo: UTXO = ...
 const p2pkh = BSV21P2PKH.fromUTXO(utxo);
 await p2pkh.connect(getDefaultSigner());
 
-// Unlock it and transfer the FTs carried by it.
+// 解锁它并转移它携带的 FT。
 const { tx: transferTx } = await p2pkh.methods.unlock(
   (sigResps) => findSig(sigResps, `yourPubKey`),
   PubKey(`yourPubKey`.toByteString()),
@@ -35,18 +35,18 @@ const { tx: transferTx } = await p2pkh.methods.unlock(
 console.log("Transferred FT: ", transferTx.id);
 ```
 
-Alternatively, you can unlock multiple FT UTXOs and send them to a smart contract. Using the `getBSV20` function you can simply fetch FT UTXOs for a given Ordinal wallet address.
+或者，你可以解锁多个 FT UTXO 并将它们发送到智能合约。使用 `getBSV20` 函数，你可以轻松获取给定 Ordinal 钱包地址的 FT UTXO。
 
 ```ts
-// ... initialize recipient smart contract
+// ... 初始化接收合约
 
-// Fetch FT UTXOs for given Ordinal address.
-// NOTE: You can not use BSV21P2PKH.getLatestInstance for BSV-21, it only works for NFTs.
+// 获取给定 Ordinal 地址的 FT UTXO。
+// 注意：你不能使用 BSV21P2PKH.getLatestInstance 用于 BSV-21，它只适用于 NFT。
 const bsv20P2PKHs = await BSV21P2PKH.getBSV20(tokenId, `your ordinal address`);
 
 await Promise.all(bsv20P2PKHs.map((p) => p.connect(signer)));
 
-// Construct recipient smart contract(s)
+// 构造接收合约
 const recipients: Array<FTReceiver> = [
   {
     instance: new HashLockFTV2(tokenId, amount, dec, sha256(message)),
@@ -54,7 +54,7 @@ const recipients: Array<FTReceiver> = [
   },
 ];
 
-// Transfer
+// 转移
 const { tx, nexts } = await BSV20V2P2PKH.transfer(
   bsv20P2PKHs,
   signer,
@@ -64,11 +64,11 @@ const { tx, nexts } = await BSV20V2P2PKH.transfer(
 console.log("Transferred FT: ", transferTx.id);
 ```
 
-## Handling Change
+## 处理找零
 
-Note, how the mechanism above is very similar to a regular Bitcoin transfer. If the FT amount from the inputs exceeds the recipients amount, the leftover will be transferred back to the Ordinal address as change.
+注意，上述机制与常规比特币转账非常相似。如果输入的 FT 数量超过接收者数量，剩余的将作为找零转移回 Ordinal 地址。
 
-You can customize the address using the method call option `tokenChangeAddress`:
+你可以使用方法调用选项 `tokenChangeAddress` 自定义地址：
 
 ```ts
 const { tx: transferTx } = await p2pkh.methods.unlock(
@@ -82,7 +82,7 @@ const { tx: transferTx } = await p2pkh.methods.unlock(
 )
 ```
 
-You can also skip change altogether by using the `skipTokenChange` option. But be careful! Any leftover tokens will be considered **burned** in this case:
+你可以通过使用 `skipTokenChange` 选项完全跳过找零。但请小心！任何剩余的代币在这种情况下都将被视为 **销毁**：
 ```ts
 const { tx: transferTx } = await p2pkh.methods.unlock(
   (sigResps) => findSig(sigResps, `yourPubKey`),
@@ -97,9 +97,9 @@ const { tx: transferTx } = await p2pkh.methods.unlock(
 
 # `buildStateOutputFT`
 
-Any instance of `BSV20` or `BSV21` contains the `buildStateOutputFT` method. Unlike the regular `buildStateOutput` method, this method inscribes the subsequent amount with an appropriate [BSV-20 transfer inscription](https://docs.1satordinals.com/bsv20#transfer-all-modes). The method takes the number of tokens to be transferred to the subsequent output as an argument.
+任何 `BSV20` 或 `BSV21` 实例都包含 `buildStateOutputFT` 方法。与常规的 `buildStateOutput` 方法不同，此方法在后续输出中铭刻了适当的 [BSV-20 转移铭文](https://docs.1satordinals.com/bsv20#transfer-all-modes)。该方法以要转移的代币数量作为参数。
 
-Below is an example of an FT counter contract:
+以下是一个 FT 计数器合约的示例：
 
 ```ts
 class CounterFTV2 extends BSV21 {
@@ -128,4 +128,4 @@ class CounterFTV2 extends BSV21 {
 }
 ```
 
-Each iteration will contain the number of tokens that was passed via `tokenAmt`. Note that this amount cannot be larger than the amount in the previous iteration. If the amount is less than in the previous iteration, the remaining tokens will be returned as change.
+每次迭代将包含通过 `tokenAmt` 传递的代币数量。请注意，这个数量不能大于前一次迭代中的数量。如果数量小于前一次迭代中的数量，剩余的代币将作为找零返回。

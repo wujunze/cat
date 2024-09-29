@@ -2,16 +2,16 @@
 sidebar_position: 4
 ---
 
-# Tutorial 4: Ordinal Lock
+# 教程 4: Ordinal 锁定
 
-## Overview
-In this tutorial, we will go over how to use [sCrypt](https://scrypt.io/) to build a full-stack dApp on Bitcoin to sell [1Sat Ordinals](https://docs.1satordinals.com/), including the smart contract and an interactive front-end.
+## 概述
+在这个教程中，我们将介绍如何使用 [sCrypt](https://scrypt.io/) 在比特币上构建一个全栈 dApp，以出售 [1Sat Ordinals](https://docs.1satordinals.com/)，包括智能合约和交互式前端。
 
-## Contract
+## 合约
 
-The contract [OrdinalLock](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/ordinalLock.ts) allows an ordinal to be offered up for sale on a decentralized marketplace. These listings can be purchased by anyone who is able to pay the requested price. Listings can also be cancelled by the person who listed them.
+智能合约 [OrdinalLock](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/ordinalLock.ts) 允许一个序号在去中心化市场上出售。任何人都可以购买这些列表，只要他们能够支付请求的价格。列表也可以由列出它们的人取消。
 
-To record the seller and price, we need to add two properties to the contract.
+为了记录卖家和价格，我们需要在合约中添加两个属性。
 
 ```ts
 export class OrdinalLock extends OrdinalNFT {
@@ -25,9 +25,9 @@ export class OrdinalLock extends OrdinalNFT {
 }
 ```
 
-### Constructor
+### 构造函数
 
-Initialize all the `@prop` properties in the constructor.
+在构造函数中初始化所有 `@prop` 属性。
 
 ```ts
 constructor(seller: PubKey, amount: bigint) {
@@ -38,25 +38,25 @@ constructor(seller: PubKey, amount: bigint) {
 }
 ```
 
-### Methods
+### 方法
 
-The public method `purchase` only needs to confine the transaction's outputs to contain:
+公共方法 `purchase` 只需要将事务的输出限制为包含：
 
-- transfer ordinal to the buyer
-- payment to the seller
+- 将序号转移到买家
+- 支付给卖家
 
 ```ts
 @method()
 public purchase(receiver: Addr) {
     const outputs =
         Utils.buildAddressOutput(receiver, 1n) + // ordinal to the buyer
-        Utils.buildAddressOutput(hash160(this.seller), this.amount) + // fund to the seller
+        Utils.buildAddressOutput(hash160(this.seller), this.amount) + // 支付给卖家
         this.buildChangeOutput()
     assert(this.ctx.hashOutputs == hash256(outputs), 'hashOutputs check failed')
 }
 ```
 
-The [final complete code](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/ordinalLock.ts) is as follows:
+完整的 [最终代码](https://github.com/sCrypt-Inc/scrypt-ord/blob/master/tests/contracts/ordinalLock.ts) 如下：
 
 ```ts
 import { Addr, prop, method, Utils, hash256, assert, ContractTransaction, bsv, PubKey, hash160, Sig, SigHash } from 'scrypt-ts'
@@ -79,8 +79,8 @@ export class OrdinalLock extends OrdinalNFT {
     @method()
     public purchase(receiver: Addr) {
         const outputs =
-            Utils.buildAddressOutput(receiver, 1n) + // ordinal to the buyer
-            Utils.buildAddressOutput(hash160(this.seller), this.amount) + // fund to the seller
+            Utils.buildAddressOutput(receiver, 1n) + // ordinal 转移给买家
+            Utils.buildAddressOutput(hash160(this.seller), this.amount) + // 支付给卖家
             this.buildChangeOutput()
         assert(
             this.ctx.hashOutputs == hash256(outputs),
@@ -91,7 +91,7 @@ export class OrdinalLock extends OrdinalNFT {
     @method(SigHash.ANYONECANPAY_SINGLE)
     public cancel(sig: Sig) {
         assert(this.checkSig(sig, this.seller), 'seller signature check failed')
-        const outputs = Utils.buildAddressOutput(hash160(this.seller), 1n) // ordinal back to the seller
+        const outputs = Utils.buildAddressOutput(hash160(this.seller), 1n) // ordinal 返回给卖家
         assert(
             this.ctx.hashOutputs == hash256(outputs),
             'hashOutputs check failed'
@@ -155,25 +155,25 @@ export class OrdinalLock extends OrdinalNFT {
 }
 ```
 
-Note the customized calling method `buildTxForPurchase` and `buildTxForCancel` ensure the ordinal is in the first input and goes to the first output, which is also a 1sat output.
+注意自定义的调用方法 `buildTxForPurchase` 和 `buildTxForCancel` 确保 ordinal 在第一个输入中，并转移到第一个输出，这也是一个 1sat 输出。
 
-## Frontend
+## 前端
 
-We will add a front-end to the `OrdinalLock` smart contract according to this [guide](../../how-to-integrate-a-frontend/how-to-integrate-a-frontend.md).
+我们将根据这个[指南](../../how-to-integrate-a-frontend/how-to-integrate-a-frontend.md)为`OrdinalLock`智能合约添加一个前端。
 
-### Setup Project
+### 设置项目
 
-The front-end will be created using [Create React App](https://create-react-app.dev/).
+前端将使用 [Create React App](https://create-react-app.dev/) 创建。
 
 ```bash
 npx create-react-app ordinal-lock-demo --template typescript
 ```
 
-### Install the sCrypt SDK
+### 安装 sCrypt SDK
 
-The sCrypt SDK enables you to easily compile, test, deploy, and call contracts.
+sCrypt SDK 使您能够轻松地编译、测试、部署和调用智能合约。
 
-Use the `scrypt-cli` command line to install the SDK.
+使用 `scrypt-cli` 命令行工具安装 SDK。
 
 ```bash
 cd ordinal-lock-demo
@@ -181,32 +181,32 @@ npm i scrypt-ord
 npx scrypt-cli init
 ```
 
-This command will create a contract under `src/contracts`. Replace the file with the contract written [above](#final-code).
+该命令将在 `src/contracts` 目录下创建一个合约文件。请用[上面](#final-code)编写的合约代码替换该文件的内容。
 
-### Compile Contract
+### 编译合约
 
-Compile the contract with the following command:
+使用以下命令编译合约:
 
 ```bash
 npx scrypt-cli compile
 ```
 
-This command will generate a contract artifact file under `artifacts`.
+该命令将在 `artifacts` 目录下生成一个合约构件文件。
 
-## Compile using the `watch` option
+## 使用 `watch` 选项编译
 
-Monitoring for Real-Time Error Detection
+实时监控检测错误
 
 ```sh
 npx scrypt-cli compile --watch
 ```
 
-this command will display sCrypt level errors during the compilation process.
+该命令将在编译过程中显示 sCrypt 级别的错误。
 
 
-### Load Contract Artifact
+### 加载合约构件
 
-Before writing the front-end code, we need to load the contract artifact in `src/index.tsx`.
+在编写前端代码之前，我们需要在 `src/index.tsx` 中加载合约构件。
 
 ```ts
 import { OrdinalLock } from './contracts/ordinalLock'
@@ -214,32 +214,32 @@ import artifact from '../artifacts/ordinalLock.json'
 OrdinalLock.loadArtifact(artifact)
 ```
 
-### Connect Signer to `OrdiProvider`
+### 连接 signer 到 `OrdiProvider`
 
 ```ts
 const provider = new OrdiProvider();
 const signer = new PandaSigner(provider);
 ```
 
-### Integrate Wallet
+### 集成钱包
 
-Use `requestAuth` method of `signer` to request access to the wallet.
+使用 `signer` 的 `requestAuth` 方法请求访问钱包。
 
 ```ts
-// request authentication
+// 请求认证
 const { isAuthenticated, error } = await signer.requestAuth();
 if (!isAuthenticated) {
-    // something went wrong, throw an Error with `error` message
+    // 出错了，抛出错误
     throw new Error(error);
 }
 
-// authenticated
+// 认证成功
 // ...
 ```
 
-### Load Ordinals
+### 加载 Ordinals
 
-After a user connect wallet, we can get the his address. Call the [1Sat Ordinals API](https://v3.ordinals.gorillapool.io/api/docs/) to retrieve ordinals on this address.
+在用户连接钱包后，我们可以获取他的地址。调用 [1Sat Ordinals API](https://v3.ordinals.gorillapool.io/api/docs/) 检索此地址上的 Ordinals。
 
 ```ts
 useEffect(() => {
@@ -253,13 +253,13 @@ function loadCollections() {
 }
 ```
 
-![](../../../static/img/ordinal-lock/load1.png)
+![](/sCrypt/ordinal-lock-01.png)
 
-![](../../../static/img/ordinal-lock/load2.png)
+![](/sCrypt/ordinal-lock-02.png)
 
-### List an Ordinal
+### 列出一个  Ordinal
 
-For each ordinal in the collection list, we can click the `Sell` button to list it after filling in the selling price, in satoshis. Sell an ordinal means we need to create a contract instance, and then transfer the ordinal into it. Afterwards, the ordinal is under the control of the contract, meaning it can be bought by anyone paying the price to the seller.
+对于集合列表中的每个 Ordinal，我们可以点击 `Sell` 按钮，在填写出售价格（以 satoshis 为单位）后将其列出。出售 Ordinal 意味着我们需要创建一个合约实例，然后将 Ordinal 转移到其中。之后，Ordinal 受合约控制，意味着它可以被任何人支付价格购买。
 
 ```ts
 async function sell() {
@@ -284,15 +284,15 @@ async function sell() {
 }
 ```
 
-![](https://lucid.app/publicSegments/view/50527d66-0710-4658-b8db-b615d60232f8/image.png)
+![](/sCrypt/ordinal-lock-03.png)
 
-![](../../../static/img/ordinal-lock/sell1.png)
+![](/sCrypt/ordinal-lock-04.png)
 
-![](../../../static/img/ordinal-lock/sell2.png)
+![](/sCrypt/ordinal-lock-05.png)
 
-### Buy an Ordinal
+### 购买一个 Ordinal
 
-To buy an ordinal that is on sale, we only need to call the contract public method `purchase`.
+要购买正在出售的 Ordinal，我们只需调用合约的公共方法 `purchase`。
 
 ```ts
 async function buy() {
@@ -302,32 +302,32 @@ async function buy() {
 }
 ```
 
-![](https://lucid.app/publicSegments/view/0b52243b-bdbc-4a13-b5b6-9386be80e155/image.png)
+![](/sCrypt/ordinal-lock-06.png)
 
-![](../../../static/img/ordinal-lock/buy1.png)
+![](/sCrypt/ordinal-lock-07.png)
 
-![](../../../static/img/ordinal-lock/buy2.png)
+![](/sCrypt/ordinal-lock-08.png)
 
-![](../../../static/img/ordinal-lock/buy3.png)
+![](/sCrypt/ordinal-lock-09.png)
 
-![](../../../static/img/ordinal-lock/buy4.png)
+![](/sCrypt/ordinal-lock-10.png)
 
-## Use Yours Wallet
+## 使用 Yours Wallet
 
-In March 2024, Panda Wallet was rebranded to [Yours Wallet](https://github.com/yours-org/yours-wallet/).
+在 2024 年 3 月，Panda Wallet 更名为 [Yours Wallet](https://github.com/yours-org/yours-wallet/)。
 
-[Yours Wallet](https://github.com/yours-org/yours-wallet) is an open-source and non-custodial web3 wallet for BSV and [1Sat Ordinals](https://docs.1satordinals.com/). This wallet allows users to have full control over their funds, providing security and independence in managing their assets.
+[Yours Wallet](https://github.com/yours-org/yours-wallet) 是一个开源且非托管的 BSV 和 [1Sat Ordinals](https://docs.1satordinals.com/) 的 web3 钱包。这个钱包允许用户完全控制他们的资金，提供安全且独立地管理他们的资产。
 
-To support Yours Wallet in the dApp, we simply replace all the `PandaSigner` with `PandaSigner`, that's all.
+要在 dApp 中支持 Yours Wallet，我们只需将所有 `PandaSigner` 替换为 `YoursSigner`，就是这样。
 
 ```ts
 import { PandaSigner } from "scrypt-ts/dist/bsv/signers/panda-signer"
 ```
 
-Different from other [signers](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#signer), we can get two addresses from `PandaSigner` after the user authorizes the connect action:
+与 [signers](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#signer) 不同，我们可以从 `PandaSigner` 获取两个地址，用户授权连接操作后：
 
-- `getDefaultAddress()`, the address for sending and receiving BSV, paying transaction fees, etc. The same as other signers.
-- `getOrdAddress()`, the address for receiving Ordinals **only**.
+- `getDefaultAddress()`, 用于发送和接收 BSV、支付交易费用等的地址。与其它 signers 相同。
+- `getOrdAddress()`, 仅用于接收 Ordinals 的地址。
 
 ```ts
 const [connectedPayAddress, setConnectedPayAddress] = useState(undefined)
@@ -344,26 +344,26 @@ async function connect() {
 }
 ```
 
-### Load Ordinals
+### 加载 Ordinals
 
-![](../../../static/img/ordinal-lock/panda-load1.png)
+![](/sCrypt/ordinal-lock-11.png)
 
-![](../../../static/img/ordinal-lock/panda-load2.png)
+![](/sCrypt/ordinal-lock-12.png)
 
-### List an Ordinal
+### 列出一个 Ordinal
 
-![](../../../static/img/ordinal-lock/panda-sell1.png)
+![](/sCrypt/ordinal-lock-13.png)
 
-![](../../../static/img/ordinal-lock/panda-sell2.png)
+![](/sCrypt/ordinal-lock-14.png)
 
-### Buy an Ordinal
+### 购买一个 Ordinal
 
-![](../../../static/img/ordinal-lock/panda-buy1.png)
+![](/sCrypt/ordinal-lock-15.png)
 
-![](../../../static/img/ordinal-lock/panda-buy2.png)
+![](/sCrypt/ordinal-lock-16.png)
 
-## Conclusion
+## 结论
 
-Congratulations! You have successfully completed a full-stack dApp that can sell 1Sat Ordinals on Bitcoin.
+恭喜！您已经成功完成了一个全栈 dApp，可以在比特币上出售 1Sat Ordinals。
 
-The full example repo can be found [here](https://github.com/sCrypt-Inc/ordinal-lock-demo).
+完整的示例仓库可以在这里找到 [here](https://github.com/sCrypt-Inc/ordinal-lock-demo).

@@ -1,20 +1,20 @@
 ---
-title: "Multiple Inputs with Different Contracts"
+title: "使用不同合约的多个输入"
 sidebar_position: 2
 ---
 
-Suppose we would like to unlock FTs within a single transaction that are located in different smart contracts. We can utilize the same technique demonstrated in the [section for calling multiple contract instances](../../advanced/how-to-call-multiple-contracts.md).
+假设我们希望在一个交易中解锁位于不同智能合约中的FT。我们可以利用在[调用多个合约实例的章节](../../advanced/how-to-call-multiple-contracts.md)中展示的相同技术。
 
 ```ts
-// One sender is regular bsv-20 P2PKH.
+// 一个发送者是常规的bsv-20 P2PKH。
 const sender0 = BSV21P2PKH.fromUTXO(utxo)
 await sender0.connect(signer)
 
-// Second sender is a hash lock contract.
+// 第二个发送者是一个哈希锁合约。
 const sender1 = HashLockFTV2.fromUTXO(utxo)
 await sender1.connect(signer)
 
-// Recipient will be a single hash lock contract.
+// 接收者将是一个单一的哈希锁合约。
 const recipientAmt = 6n
 const recipients: Array<FTReceiver> = [
     {
@@ -146,10 +146,10 @@ const { tx } = await SmartContract.multiContractCall(
 console.log('Transfer tx:', tx.id)
 ```
 
-In the above code, a partial transaction is constructed, which unlocks the first UTXO containing a `BSV21P2PKH` instance. The actual contract call doesn't execute yet, as we set the `multiContractCall` flag within the method call parameters.
+在上面的代码中，构造了一个部分事务，该事务解锁了包含 `BSV21P2PKH` 实例的第一个UTXO。实际的合约调用尚未执行，因为我们已经在方法调用参数中设置了 `multiContractCall` 标志。
 
-We then feed that partially constructed transaction via the second contract call, which will unlock the `HashLockFTV2` instance. Just like the first call, this call also has the `multiContractCall` flag set.
+然后，我们通过第二次合约调用传递该部分构造的事务，该调用将解锁 `HashLockFTV2` 实例。就像第一次调用一样，这个调用也有 `multiContractCall` 标志设置。
 
-Once the transaction is fully built, we can sign and broadcast it using the `SmartContract.multiContractCall` function.
+一旦事务完全构建，我们可以使用 `SmartContract.multiContractCall` 函数进行签名和广播。
 
-The above code is an example based on `BSV-21`, but the same can be achieved using `BSV-20`.
+上面的代码是基于 `BSV-21` 的示例，但同样可以利用 `BSV-20` 实现。

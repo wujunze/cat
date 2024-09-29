@@ -2,21 +2,21 @@
 sidebar_position: 3
 ---
 
-# Fungible Tokens - FTs
+# 同质化代币 - FTs
 
-Just like NFTs, `scrypt-ord` also supports fungible tokens. Under the hood it utilizes the [`bsv-20` protocol](https://docs.1satordinals.com/bsv20).
+与 NFTs 一样，`scrypt-ord` 也支持同质化代币。底层利用了 [`bsv-20` 协议](https://docs.1satordinals.com/bsv20)。
 
-BSV-20 is a protocol for creating fungible tokens on the Bitcoin SV blockchain. Fungible tokens are interchangeable with each other, and can be used to represent a variety of assets, such as currencies, securities, and in-game items.
+BSV-20 是比特币 SV 区块链上创建同质化代币的协议。同质化代币是可互换的，可以代表各种资产，例如货币、证券和游戏内物品。
 
-`scrypt-ord` supports both `BSV-20` and `BSV-21` of the  FT protocol.
+`scrypt-ord` 支持 `BSV-20` 和 `BSV-21` 两种同质化代币协议。
 
 
 ## `BSV-20`
 
-Tokens utilizing the first version of the `bsv-20` must be initialized by a **deployment** inscription, which specifies the token's ticker symbol, amount and mint limit. For more information, refer to the [1Sat docs](https://docs.1satordinals.com/bsv20#v1-mint-first-is-first-mode).
+使用 `bsv-20` 的第一个版本创建的代币必须通过 **铭刻** 铭文进行初始化，指定代币的符号、数量和铸币限制。更多信息，请参阅 [1Sat 文档](https://docs.1satordinals.com/bsv20#v1-mint-first-is-first-mode)。
 
 
-To create a v1 token smart contract, have it extend the `BSV20` class:
+要创建一个 v1 代币智能合约，请让它继承 `BSV20` 类：
 
 ```ts
 class HashLockFT extends BSV20 {
@@ -36,13 +36,13 @@ class HashLockFT extends BSV20 {
 }
 ```
 
-As you can see above, the constructor of contract extending the `BSV20` takes as parameters all of the needed information for the token deployment, succeeded by other parameters needed you use for your contract (`hash` in this particular example). 
-Each constructor extending the `BSV20V1` class must also call the instances `init` method and pass the constructors arguments. It is important to call this function **after** the call to `super`.
+如上所示，继承 `BSV20` 的合约构造函数需要所有代币部署所需的信息，后跟您要用于合约的参数（在这个特定的例子中是 `hash`）。
+每个继承 `BSV20V1` 类的构造函数也必须调用实例的 `init` 方法并传递构造函数的参数。重要的是在 `super` 调用之后调用这个函数。
 
 
-### Deployment
+### 部署
 
-Here's an example of how you would deploy the new FT:
+以下代码演示了如何部署新的代币：
 
 ```ts
 HashLockFT.loadArtifact();
@@ -63,11 +63,11 @@ await hashLock.connect(getDefaultSigner());
 await hashLock.deployToken();
 ```
 
-### Mint and Transfer
+### 铸造和转移
 
-Once the deployment transaction was successfully broadcast, the token is ready for minting.
+一旦部署交易成功广播，代币就可以进行铸造。
 
-Here's how you can mint some amount:
+以下代码演示了如何铸造一些代币：
 
 ```ts
 // Minting
@@ -76,16 +76,16 @@ const mintTx = await hashLock.mint(amt);
 console.log("Minted tx: ", mintTx.id);
 ```
 
-Note, that if the amount exceeds the limit set above, or the token was already wholely minted, the transaction won't be considered valid by 1Sat indexers.
+注意，如果铸造的数量超过了上述限制，或者代币已经被完全铸造，1Sat 索引器将不会认为交易有效。
 
-The minted amount can then be transferred by calling the contract, as in [regular sCrypt contracts](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call):
+铸造的代币可以像 [常规 sCrypt 合约](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) 一样通过调用合约进行转移：
 
 ```ts
-// Transfer
+// 转移
 for (let i = 0; i < 3; i++) {
-  // The recipient contract.
-  // Because this particular contract doesn't enforce subsequent outputs,
-  // it could be any other contract or just a P2PKH.
+  // 接收合约。
+  // 因为这个特定的合约不强制后续输出，
+  // 它可以是任何其他合约或只是一个 P2PKH。
   const receiver = new HashLockFT(
     tick,
     max,
@@ -100,7 +100,7 @@ for (let i = 0; i < 3; i++) {
     },
   ];
 
-  // Unlock and transfer.
+  // 解锁并转移。
   const { tx } = await hashLock.methods.unlock(
     toByteString(`secret:${i}`, true),
     {
@@ -109,21 +109,21 @@ for (let i = 0; i < 3; i++) {
   );
   console.log("Transfer tx: ", tx.id);
   
-  // Update instance for next iteration.
+  // 更新实例以进行下一次迭代。
   hashLock = recipients[0].instance as HashLockFT;
 }
 ```
 
-Note that the new recipient smart contract instance is passed as a parameter named `transfer` during the call to the deployed instance. The `transfer` parameter is an array of contract instances that extend `BSV20`.
+注意，新的接收合约实例作为名为 `transfer` 的参数传递给部署实例的调用。 `transfer` 参数是继承 `BSV20` 的合约实例数组。
 
 
 ## `BSV-21`
 
-Version 2 of the `BSV-21` token protocol simplifies the process of minting a new fungible token. In this version, the deployment and minting are done within a single transaction. Unlike `BSV-20`, `BSV-21` lacks a token ticker field. The token is identified by an `id` field, which is the transaction id and output index where the token was minted, in the form of `<txid>_<vout>`.
+`BSV-21` 代币协议的第二版简化了铸造新的可替代代币的过程。在这个版本中，部署和铸造在单个交易中完成。与 `BSV-20` 不同，`BSV-21` 没有代币代号字段。代币通过 `id` 字段来识别，该字段是代币铸造时的交易 ID 和输出索引，格式为 `<txid>_<vout>`。
 
-Please refer to the [official 1Sat documentation](https://docs.1satordinals.com/bsv20#new-in-v2-tickerless-mode) for more info.
+更多信息，请参阅 [1Sat 文档](https://docs.1satordinals.com/bsv20#new-in-v2-tickerless-mode)。
 
-To create a `BSV-21` token smart contract, have it extend the `BSV21` class:
+要创建一个 `BSV-21` 代币智能合约，让它继承 `BSV21` 类：
 
 ```ts
 class HashLockFTV2 extends BSV21 {
@@ -143,18 +143,18 @@ class HashLockFTV2 extends BSV21 {
 }
 ```
 
-### Deploy+Mint
+### 部署+铸造
 
-In `BSV-20`, tokens are deployed and minted in separate transactions, but in `BSV-21`, all tokens are deployed and minted in one transactions. Here's an example of how you would deploy the new `BSV-21` FT:
+在 `BSV-20` 中，代币在单独的交易中部署和铸造，但在 `BSV-21` 中，所有代币都在一个交易中部署和铸造。以下代码演示了如何部署新的 `BSV-21` 代币：
 
 ```ts
 HashLockFTV2.loadArtifact()
 
 const sym = toByteString('sCrypt', true)
-const max = 10000n  // Whole token amount.
-const dec = 0n      // Decimal precision.
+const max = 10000n  // 代币总量。
+const dec = 0n      // 小数精度。
 
-// Since we cannot know the id of the token deployment transaction at the time of deployment, the id is empty.
+// 由于我们无法在部署时知道代币部署交易的事务 ID，因此它是空的。
 const hashLock = new HashLockFTV2(
     toByteString(''),
     sym,
@@ -168,7 +168,7 @@ const tokenId = await hashLock.deployToken()
 console.log('token id: ', tokenId)
 ```
 
-v2 supports adding additional meta information when deploying token, such as:
+v2 支持在部署代币时添加额外的元信息，例如：
 
 ```ts
 const tokenId = await hashLock.deployToken({
@@ -178,18 +178,18 @@ console.log('token id: ', tokenId)
 ```
 
 
-The whole token supply is minted within the first transaction, and whoever can unlock the deployment UTXO will gain full control of the whole supply. Additionally, the smart contract itself can enforce rules for the distribution of the tokens.
+整个代币供应量在第一个交易中铸造，谁可以解锁部署 UTXO 将获得整个供应量的控制权。此外，智能合约本身可以强制执行代币分配的规则。
 
-### Transfer
+### 转移
 
-The minted amount can be transferred by invoking the contract, similar to [standard sCrypt contracts](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call):
+铸造的代币可以像 [常规 sCrypt 合约](../../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) 一样通过调用合约进行转移：
 
 ```ts
-// Transfer
+// 转移
 for (let i = 0; i < 3; i++) {
-  // The recipient contract.
-  // Because this particular contract doesn't enforce subsequent outputs,
-  // it could be any other contract or just a P2PKH.
+  // 接收合约。
+  // 因为这个特定的合约不强制后续输出，
+  // 它可以是任何其他合约或只是一个 P2PKH。
   const receiver = new HashLockFTV2(
     toByteString(tokenId, true),
     sym,
@@ -204,7 +204,7 @@ for (let i = 0; i < 3; i++) {
     },
   ];
 
-  // Unlock and transfer.
+  // 解锁并转移。
   const { tx } = await hashLock.methods.unlock(
     toByteString(`secret:${i}`, true),
     {
@@ -213,11 +213,11 @@ for (let i = 0; i < 3; i++) {
   );
   console.log("Transfer tx: ", tx.id);
   
-  // Update instance for next iteration.
+  // 更新实例以进行下一次迭代。
   hashLock = recipients[0].instance as HashLockFTV2;
 }
 ```
 
-The new recipient smart contract instance is provided as a `transfer` parameter when calling the deployed instance. The `transfer` parameter consists of an array of contract instances derived from `BSV21`.
+新的接收合约实例作为 `transfer` 参数传递给部署实例的调用。 `transfer` 参数由继承 `BSV21` 的合约实例数组组成。
 
 ---

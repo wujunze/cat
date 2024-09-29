@@ -2,41 +2,42 @@
 sidebar_position: 1
 ---
 
-# The Official sCrypt 1Sat Ordinals SDK
+# sCrypt 官方 1Sat Ordinals SDK
 
-sCrypt offers its official [1Sat Ordinals](https://docs.1satordinals.com/) SDK named [`scrypt-ord`](https://github.com/sCrypt-Inc/scrypt-ord).
+sCrypt 提供其官方的 [1Sat Ordinals](https://docs.1satordinals.com/) SDK，名为 [`scrypt-ord`](https://github.com/sCrypt-Inc/scrypt-ord)。
 
-The SDK offers an easy to use interface for deploying and transferring 1Sat Ordinals and augmenting them with the power of sCrypt smart contracts.
+该 SDK 提供了一个易于使用的接口，用于部署和转移 1Sat Ordinals 以及使用 sCrypt 智能合约的强大功能。
 
-It facilitates the development of smart contracts for both non-fungible tokens (NFTs) and fungible tokens (FTs).
-You can also inscribe NFT's and BSV20 at [sCrypt](https://inscribe.scrypt.io)
-and a video guide on how to inscribe directly can be found at [YouTube](https://youtu.be/IsNINX3pqKI?si=gcnhbKN-sP-7mPJ5).
+它促进了非同质化代币 (NFT) 和同质化代币 (FT) 的智能合约的开发。
 
-## Installation
+你也可以在 [sCrypt](https://inscribe.scrypt.io) 上铭刻 NFT 和 BSV20，
+以及一个关于如何直接铭刻的视频指南，可以在 [YouTube](https://youtu.be/IsNINX3pqKI?si=gcnhbKN-sP-7mPJ5) 上找到。
 
-It is recommended that you [create an sCrypt project](../installation.md#the-scrypt-cli-tool) using our CLI tool. Once you have the project set up, simply run the following command:
+## 安装
+
+我们建议你使用我们的 CLI 工具 [创建一个 sCrypt 项目](../installation.md#the-scrypt-cli-tool)。一旦你设置好项目，只需运行以下命令：
 
 ```
 npm i scrypt-ord
 ```
 
-## Base Classes
+## 基础类
 
-`scrypt-ord` provides base classes that can be extended with custom smart contract functionality. Unlike the `SmartContract` class, which you would typically extend for a regular sCrypt smart contract, here you should extend these base classes to integrate your smart contract with 1Sat ordinals functionality.
+`scrypt-ord` 提供了可以扩展自定义智能合约功能的基类。与通常扩展的 `SmartContract` 类不同，在这里你应该扩展这些基类，以将你的智能合约与 1Sat ordinals 功能集成。
 
-**Non-fungible tokens (NFTs):**
+**非同质化代币 (NFTs):**
 - `OrdinalNFT`
 
-**Fungible tokens (FTs):**
+**同质化代币 (FTs):**
 - `BSV20`
 - `BSV21`
 
-There are also pre-made classes that represent standard 1Sat transfers using the widely employed `P2PKH` mechanism:
+还有预先制作的标准 1Sat 转移类，使用广泛采用的 `P2PKH` 机制：
 - `OrdiNFTP2PKH`
 - `BSV20P2PKH`
 - `BSV21P2PKH`
 
-Suppose you wish to lock an ordinal token using a custom hash puzzle contract, you would define the smart contract class as shown below:
+假设你希望使用自定义哈希谜题合约锁定一个序数代币，你可以按照以下方式定义智能合约类：
 
 ```ts
 class HashLockNFT extends OrdinalNFT {
@@ -56,15 +57,15 @@ class HashLockNFT extends OrdinalNFT {
 }
 ```
 
-For a deeper exploration, please refer to the respective subsections:
+要深入探索，请参阅以下相应的子章节：
 
-* [Non-Fungible Tokens (NFTs)](nft/nft.md)
-* [Fungible Tokens (FTs)](ft/ft.md)
+* [非同质化代币 (NFTs)](nft/nft.md)
+* [同质化代币 (FTs)](ft/ft.md)
 
 
 ## `OrdiProvider`
 
-When you use sCrypt 1Sat Ordinals SDK, we recommend that you use `OrdiProvider` as the [provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider). This allows your transaction to be indexed instantly, instead of waiting for it to be mined into a block.
+当你使用 sCrypt 1Sat Ordinals SDK 时，我们建议你使用 `OrdiProvider` 作为 [provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider)。这允许你的交易立即被索引，而不是等待它被挖掘到一个区块中。
 
 
 ```ts
@@ -77,13 +78,13 @@ export function getDefaultSigner(): TestWallet {
 ```
 
 
-## Indexer APIs
+## 索引器 API
 
-### mainnet
+### 主网
 
 - `gorillapool`: https://ordinals.gorillapool.io/api/docs
 
-### testnet
+### 测试网
   
 - `gorillapool`: https://testnet.ordinals.gorillapool.io/api/docs
 - `scrypt` (only bsv21): https://1sat.scrypt.io/api/docs
