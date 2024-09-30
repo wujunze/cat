@@ -104,7 +104,19 @@ export default defineConfig({
   description: "全面学习了解CAT Protocol的最强学习社区",
   srcDir: "docs",
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    [
+      'script',
+      { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-01F1KEBQBY' }
+    ],
+    [
+      'script',
+      {},
+      `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-01F1KEBQBY');`
+    ]
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
