@@ -2,31 +2,26 @@
 sidebar_position: 7
 ---
 
-# How to Add a Signer
+# 如何添加一个signer
 
 
-As described in [this section](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider), a signer is an abstraction of private keys, which can be used to sign messages and transactions. A simple signer would be a single private key, while a complex signer is a wallet.
+如[本节](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider)所述，signer是私钥的抽象，可用于签署消息和交易。简单的signer可能是单个私钥，而复杂的signer则是钱包。    
 
-`sCrypt` provides the following signers by default:
+`sCrypt` 提供了以下默认的signers：
 
-1. `TestWallet` : a simple wallet that can hold multiple private keys, with in-memory utxo management. Should only be used for testing.
-1. `PandaSigner`: a signer powered by the popular smart contract wallet [Yours Wallet](https://github.com/yours-org/yours-wallet/). Can be used [in production](https://docs.scrypt.io/tokens/tutorials/ordinal-lock.md#use-panda-wallet).
+1. `TestWallet` : 一个简单的钱包，可以持有多个私钥，具有内存中的utxo管理。仅用于测试。
+1. `PandaSigner`: 一个由流行的智能合约钱包 [Yours Wallet](https://github.com/yours-org/yours-wallet/) 驱动的signer。可以用于[生产环境](https://docs.scrypt.io/tokens/tutorials/ordinal-lock.md#use-panda-wallet).
 
-## Implementation
+## 实现
 
-### Base Class `Signer`
+### 基类 `Signer`
 
-If you want to implement your own signer, you must inherit from the base class `Signer`.
+如果你想实现自己的signer，你必须继承自基类`Signer`。
 
 
 ```ts
 /**
- * A `Signer` is a class which in some way directly or indirectly has access to a private key, which can sign messages and transactions to authorize the network to perform operations.
- */
-
-
-/**
- * A `Signer` is a class which in some way directly or indirectly has access to a private key, which can sign messages and transactions to authorize the network to perform operations.
+ * 一个`Signer`是一个直接或间接访问私钥的类，可以签署消息和交易，以授权网络执行操作。
  */
 export abstract class Signer {
 
@@ -38,58 +33,57 @@ export abstract class Signer {
     this.provider = provider;
   }
 
-  // Authentication
+  // 认证
 
   abstract getNetwork(): Promise<bsv.Networks.Network>;
 
   /**
-   * Check if the wallet has been authenticated
+   * 检查钱包是否已认证
    * @returns {boolean} true | false
    */
   abstract isAuthenticated(): Promise<boolean>;
 
   /**
-   * Request wallet authentication
-   * @returns A promise which resolves to if the wallet has been authenticated and the authenticate error message
+   * 请求钱包认证
+   * @returns 一个Promise，解析为钱包是否已认证以及认证错误消息
    */
   abstract requestAuth(): Promise<{ isAuthenticated: boolean, error: string }>;
 
   /**
-   * set provider
-   * @param provider The target provider.
-   * @returns
+   * 设置provider
+   * @param provider 目标provider
    */
   abstract setProvider(provider: Provider): void;
 
   /**
    *
-   * @returns A promise which resolves to the public key of the default private key of the signer.
+   * @returns 一个Promise，解析为signer的默认私钥的公钥
    */
   abstract getDefaultPubKey(): Promise<bsv.PublicKey>;
 
   /**
    * 
-   * @returns A promise which resolves to the address to the default private key of the signer.
+   * @returns 一个Promise，解析为signer的默认私钥的地址
    */
   abstract getDefaultAddress(): Promise<bsv.Address>;
 
   /**
    * 
-   * @param address The request address, using the default address if omitted.
-   * @returns The public key result.
-   * @throws If the private key for the address does not belong this signer.
+   * @param address 请求的地址，如果省略，则使用默认地址。
+   * @returns 公钥结果。
+   * @throws 如果地址的私钥不属于此signer。
    */
   abstract getPubKey(address?: AddressOption): Promise<bsv.PublicKey>;
 
-  // Signing
+  // 签名
 
   /**
-   * Sign a raw transaction hex string.
+   * 对一个原始交易十六进制字符串进行签名。
    *
-   * @param rawTxHex The raw transaction hex to sign.
-   * @param options The options for signing, see the details of `SignTransactionOptions`.
-   * @returns A promise which resolves to the signed transaction hex string.
-   * @throws If any input of the transaction can not be signed properly.
+   * @param rawTxHex 要签名的原始交易十六进制字符串。
+   * @param options 签名的选项，见`SignTransactionOptions`的详细信息。
+   * @returns 一个Promise，解析为签名的交易十六进制字符串。
+   * @throws 如果交易中的任何输入不能正确签名。
    */
   async signRawTransaction(rawTxHex: string, options: SignTransactionOptions): Promise<string> {
     const signedTx = await this.signTransaction(new bsv.Transaction(rawTxHex), options);
@@ -97,10 +91,10 @@ export abstract class Signer {
   }
 
   /**
-   * Sign a transaction object. By default only signs inputs, which are unlocking P2PKH UTXO's.
-   * @param tx The transaction object to sign.
-   * @param options The options for signing, see the details of `SignTransactionOptions`.
-   * @returns A promise which resolves to the signed transaction object.
+   * 对一个交易对象进行签名。默认情况下，只对解锁P2PKH UTXO的输入进行签名。
+   * @param tx 要签名的交易对象。
+   * @param options 签名的选项，见`SignTransactionOptions`的详细信息。
+   * @returns 一个Promise，解析为签名的交易对象。
    */
   async signTransaction(tx: bsv.Transaction, options?: SignTransactionOptions): Promise<bsv.Transaction> {
 
@@ -108,25 +102,25 @@ export abstract class Signer {
   }
 
   /**
-   * Sign a message string.
-   * @param message The message to be signed.
-   * @param address The optional address whose private key will be used to sign `message`, using the default private key if omitted.
-   * @returns A promise which resolves to the signautre of the message.
+   * 对一个消息字符串进行签名。
+   * @param message 要签名的消息字符串。
+   * @param address 可选的地址，其私钥将用于签名`message`，如果省略，则使用默认私钥。
+   * @returns 一个Promise，解析为消息的签名。
    */
   abstract signMessage(message: string, address?: AddressOption): Promise<string>;
 
   /**
-   * Get the requested transaction signatures for the raw transaction.
-   * @param rawTxHex The raw transaction hex to get signatures from.
-   * @param sigRequests The signature requst informations, see details in `SignatureRequest`.
-   * @returns A promise which resolves to a list of `SignatureReponse` corresponding to `sigRequests`.
+   * 获取原始交易的请求签名。
+   * @param rawTxHex 要获取签名的原始交易十六进制字符串。
+   * @param sigRequests 签名的请求信息，见`SignatureRequest`的详细信息。
+   * @returns 一个Promise，解析为与`sigRequests`对应的`SignatureReponse`列表。
    */
   abstract getSignatures(rawTxHex: string, sigRequests: SignatureRequest[]): Promise<SignatureResponse[]>;
 
   /**
-   * Get the connected provider.
-   * @returns the connected provider.
-   * @throws if no provider is connected to `this`.
+   * 获取连接的provider。
+   * @returns 连接的provider。
+   * @throws 如果没有provider连接到`this`。
    */
   get connectedProvider(): Provider {
     if (!this.provider) {
@@ -137,10 +131,10 @@ export abstract class Signer {
   }
 
   /**
-   * Sign transaction and broadcast it
-   * @param tx A transaction is signed and broadcast
-   * @param options The options for signing, see the details of `SignTransactionOptions`.
-   * @returns A promise which resolves to the transaction id.
+   * 签署交易并广播。
+   * @param tx 一个被签署和广播的交易
+   * @param options 签名的选项，见`SignTransactionOptions`的详细信息。
+   * @returns 一个Promise，解析为交易id。
    */
   async signAndsendTransaction(tx: bsv.Transaction, options?: SignTransactionOptions): Promise<TransactionResponse> {
     await tx.sealAsync();
@@ -150,39 +144,39 @@ export abstract class Signer {
   };
 
   /**
-   * Get a list of the P2PKH UTXOs.
-   * @param address The address of the returned UTXOs belongs to.
-   * @param options The optional query conditions, see details in `UtxoQueryOptions`.
-   * @returns  A promise which resolves to a list of UTXO for the query options.
+   * 获取P2PKH UTXOs列表。
+   * @param address 返回的UTXOs所属的地址。
+   * @param options 可选的查询条件，见`UtxoQueryOptions`的详细信息。
+   * @returns 一个Promise，解析为UTXO列表。
    */
   listUnspent(address: AddressOption, options?: UtxoQueryOptions): Promise<UTXO[]> {
-    // Default implementation using provider. Can be overriden.
+    // 使用provider的默认实现。可以被重写。
     return this.connectedProvider.listUnspent(address, options);
   }
 
   /**
-   * Get the balance of BSVs in satoshis for an address.
-   * @param address The query address.
-   * @returns A promise which resolves to the address balance status.
+   * 获取BSV余额。
+   * @param address 查询的地址。
+   * @returns 一个Promise，解析为地址的余额状态。
    */
   async getBalance(address?: AddressOption): Promise<{ confirmed: number, unconfirmed: number }> {
-    // Default implementation using provider. Can be overriden.
+    // 使用provider的默认实现。可以被重写。
     address = address ? address : await this.getDefaultAddress();
     return this.connectedProvider.getBalance(address);
   }
 
-  // Inspection
+  // 检查
   /**
-   * Check if an object is a `Signer`
-   * @param value The target object
-   * @returns Returns `true` if and only if `object` is a Provider.
+   * 检查一个对象是否是`Signer`
+   * @param value 目标对象
+   * @returns 如果`object`是`Signer`，返回`true`。
    */
   static isSigner(value: any): value is Signer {
     return !!(value && value._isSigner);
   }
 
   /**
-   * Align provider's network after the signer is authenticated
+   * 在signer认证后，对provider的网络进行对齐
    */
   async alignProviderNetwork() {
     ...
@@ -190,13 +184,13 @@ export abstract class Signer {
 }
 ```
 
-It is recommended that your signer implements all `abstract` methods. For non-`abstract` methods, the default implementation is usually sufficient.
+建议你的signer实现所有`abstract`方法。对于非`abstract`方法，默认实现通常是足够的。
 
-### `Example: PandaSigner`
+### `例子: PandaSigner`
 
-Next, we use the [Yours Wallet](https://github.com/yours-org/yours-wallet) as an example to show how to implement a `PandaSigner`.
+接下来，我们使用[Yours Wallet](https://github.com/yours-org/yours-wallet)作为示例，展示如何实现一个`PandaSigner`。
 
-1. Implement the `isAuthenticated` method to Check if the wallet has been authenticated:
+1. 实现`isAuthenticated`方法，检查钱包是否已认证：
 
 ```ts
 private _initTarget() {
@@ -212,7 +206,7 @@ private _initTarget() {
 }
 
 /**
- * Check if the wallet has been authenticated
+ * 检查钱包是否已认证
  * @returns {boolean} true | false
  */
 override isAuthenticated(): Promise<boolean> {
@@ -222,12 +216,12 @@ override isAuthenticated(): Promise<boolean> {
 ```
 
 
-2. Implement the `requestAuth` method to request wallet authentication:
+2. 实现`requestAuth`方法，请求钱包认证：
 
 ```ts
 /**
- * Request wallet authentication
- * @returns A promise which resolves to if the wallet has been authenticated and the authenticate error message
+ * 请求钱包认证
+ * @returns 一个Promise，解析为钱包是否已认证以及认证错误消息
  */
 override async requestAuth(): Promise<{ isAuthenticated: boolean, error: string }> {
     let isAuthenticated: boolean = false
@@ -244,18 +238,18 @@ override async requestAuth(): Promise<{ isAuthenticated: boolean, error: string 
 ```
 
 
-3. Returns the address to the default private key of the wallet in `getDefaultAddress`:
+3. 在`getDefaultAddress`中返回钱包的默认私钥的地址：
 
 ```ts
 /**
- * Get an object that can directly interact with the Panda wallet,
- * if there is no connection with the wallet, it will request to establish a connection.
+ * 获取一个可以直接与Panda钱包交互的对象，
+ * 如果没有与钱包的连接，将请求建立连接。
  * @returns PandaAPI
  */
 private async getConnectedTarget(): Promise<PandaAPI> {
     const isAuthenticated = await this.isAuthenticated()
     if (!isAuthenticated) {
-        // trigger connecting to panda account when it's not authorized.
+        // 当未授权时，触发连接到Panda账户。
         try {
 
             this._initTarget();
@@ -279,7 +273,7 @@ override async getDefaultAddress(): Promise<bsv.Address> {
 }
 ```
 
-4. Returns the public key to the default private key of the wallet in `getDefaultPubKey`:
+4. 在`getDefaultPubKey`中返回钱包的默认私钥的公钥：
 
 ```ts
 override async getDefaultPubKey(): Promise<bsv.PublicKey> {
@@ -289,7 +283,7 @@ override async getDefaultPubKey(): Promise<bsv.PublicKey> {
 }
 ```
 
-5. Since Panda is a single-address wallet, we simply ignore the `getPubKey` method:
+5. 由于Panda是一个单地址钱包，我们简单地忽略`getPubKey`方法：
 
 ```ts
 override async getPubKey(address: AddressOption): Promise<PublicKey> {
@@ -297,15 +291,15 @@ override async getPubKey(address: AddressOption): Promise<PublicKey> {
 }
 ```
 
-6. Both `signTransaction` and `signRawTransaction` sign the transaction, and are already implemented in the base class. You just need to implement the `getSignatures` function. The following code calls panda's `getSignatures` API to request a wallet signature.
+6. `signTransaction`和`signRawTransaction`方法已经实现，你只需要实现`getSignatures`方法。以下代码调用Panda的`getSignatures` API来请求钱包签名。
 
 
 ```ts
 /**
- * Get signatures with Panda api
- * @param rawTxHex a transation raw hex
- * @param sigRequests a `SignatureRequest` array for the some inputs of the transaction.
- * @returns a `SignatureResponse` array
+ * 使用Panda API获取签名
+ * @param rawTxHex 一个交易的原始十六进制字符串
+ * @param sigRequests 一个`SignatureRequest`数组，用于交易的一些输入。
+ * @returns 一个`SignatureResponse`数组
  */
 override async getSignatures(rawTxHex: string, sigRequests: SignatureRequest[]): Promise<SignatureResponse[]> {
     const panda = await this.getConnectedTarget();
@@ -336,7 +330,7 @@ override async getSignatures(rawTxHex: string, sigRequests: SignatureRequest[]):
 ```
 
 
-7. Panda supports signing messages, if your wallet does not support it, you can throw an exception in the `signMessage` function:
+7. Panda支持签名消息，如果你的钱包不支持，你可以在`signMessage`函数中抛出异常：
 
 ```ts
 override async signMessage(message: string, address?: AddressOption): Promise<string> {
@@ -349,7 +343,7 @@ override async signMessage(message: string, address?: AddressOption): Promise<st
 }
 ```
 
-So far, we have implemented all abstract methods. The remaining non-abstract methods can reuse the default implementation, that is, delegating to the connected [provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider). If you have a customized implementation, you can override them. For example, we can use the Panda api `getBalance` to obtain the balance of an address.
+到目前为止，我们已经实现了所有抽象方法。剩余的非抽象方法可以重用默认实现，即委托给连接的[provider](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#provider)。如果你有自定义的实现，你可以覆盖它们。例如，我们可以使用Panda api `getBalance`来获取地址的余额。
 
 ```ts
 override getBalance(address?: AddressOption): Promise<{ confirmed: number, unconfirmed: number }> {
@@ -363,17 +357,17 @@ override getBalance(address?: AddressOption): Promise<{ confirmed: number, uncon
 }
 ```
 
-Now we have implemented `PandaSigner`. The full code is [here](https://gist.github.com/zhfnjust/4448c0c10e2352d0b7f6eeb86dbd6b0f).
+现在我们已经实现了`PandaSigner`。完整的代码[在这里](https://gist.github.com/zhfnjust/4448c0c10e2352d0b7f6eeb86dbd6b0f)。
 
-## Use your signer
+## 使用你的signer
 
-Just connect your signer to a smart contract instance like any other signers:
+只需将你的signer连接到智能合约实例，就像任何其他signers一样：
 
 ```ts
-// declare your signer
+// 声明你的signer
 const your_signer = new YourSigner(new DefaultProvider());
-// connect the signer to the contract instance
+// 将signer连接到智能合约实例
 await instance.connect(your_signer);
 ```
 
-Here is another [user-customized signer](https://github.com/shubham78901/scryptDemo/blob/neucron/tests/utils/neucronSigner.ts).
+这里有一个[用户自定义的signer](https://github.com/shubham78901/scryptDemo/blob/neucron/tests/utils/neucronSigner.ts).

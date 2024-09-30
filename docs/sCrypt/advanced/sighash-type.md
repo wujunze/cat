@@ -2,188 +2,193 @@
 sidebar_position: 2
 ---
 
-# Sighash Types
+# 签名哈希类型
 
-A signature hash (sighash) flag is used to indicate which part of the transaction is signed by the ECDSA signature. There are mainly two ways to use it in the context of Bitcoin smart contracts.
+签名哈希（sighash）标志用于指示由ECDSA签名签署的交易的哪部分。在比特币智能合约的上下文中，主要有两种使用方式。
 
-## 1. Sighash Types in Signatures
+## 1. 签名哈希类型
 
-In this section, we will go deep into the sighash type and introduce how to use it in the bitcoin signatures.
+在本节中，我们将深入探讨签名哈希类型，并介绍如何在比特币签名中使用它。
 
 
-### Digital Signature
+### 数字签名
 
-A digital signature is a mathematical scheme that consists of two parts：
+数字签名是一个数学方案，由两部分组成：
 
-- an algorithm for creating a signature, using a private key to sign a message.
+- 用于创建签名的算法，使用私钥对消息进行签名。
 
 ```
 sign(privateKey, message) --> signature
 ```
 
-- an algorithm that allows anyone to verify the signature, given also the message and a public key.
+- 一个允许任何人在给定消息和公钥的情况下验证签名的算法。
 
 ```
 verify(signature, publicKey, message) --> true/false
 ```
 
-The private key and the public key always appear in pairs, and the public key can be calculated from the private key, but not vice versa. Thus, you will always publish the public key so anyone can verify your signature, and keep the private key safe so only you can provide the correct signature.
+私钥和公钥总是成对出现的，可以从私钥计算出公钥，但反之则不行。因此，您应该始终公开公钥，以便任何人都可以验证您的签名，并保持私钥安全，这样只有您才能提供正确的签名。
 
 ![img](/sCrypt/sighash-type-01.png)
 
-Digital signatures are used to represent the authenticity and integrity of a message, since any modification to the message invalidates the signature, causing signature verification to fail. It is also proof that someone owns the private key, since the signature cannot be forged and it can be successfully verified with the corresponding public key only if it is signed with the correct private key.
+数字签名用于表示消息的真实性和完整性，因为对消息的任何修改都会使签名无效，导致签名验证失败。它也是证明某人拥有私钥的证据，因为签名无法被伪造，并且只有在使用正确的私钥签名的情况下，才能使用相应的公钥成功验证签名。
 
-### Bitcoin Signature
+### 比特币签名
 
-Digital signatures are applied to messages, which in the case of bitcoin, are the transactions themselves. The signature implies a commitment by the signer to specific transaction data. In the simplest form, the signature applies to the entire transaction (excluding the unlocking scripts), thereby committing all the inputs, outputs, and other transaction fields. The P2PKH transaction is a simple example of using signatures, which is widely used in bitcoin.
+数字签名被应用于消息验证，在比特币中，这些消息就是交易本身。签名意味着签名者对特定的交易数据做出承诺。最简单的形式是，签名适用于整个交易（不包括解锁脚本），从而承诺所有的输入、输出和其他交易字段。P2PKH交易是使用签名的一个简单例子，在比特币中被广泛使用。
 
-Using a sighash flag, a Bitcoin signature specifies which parts of a transaction’s data is included and thus signed by a private key. The included transaction data is the so called [ScriptContext](../how-to-write-a-contract/scriptcontext.md). Every signature has a sighash flag and the flag can be different from signature to signature. 
+使用签名哈希标志，比特币签名指定了交易数据的哪些部分被包含在内，并因此被私钥签名。被包含的交易数据被称为[ScriptContext](../how-to-write-a-contract/scriptcontext.md)。每个签名都有一个签名哈希标志，并且每个签名的标志可以不同。
 
-The image below illustrates what data would be signed using an `ALL` sighash flag. The data being signed is highlighted in green.
+下图说明了使用`ALL`签名哈希标志时会签名哪些数据。被签名的数据以绿色高亮显示。
 
 ![img](/sCrypt/sighash-type-02.png)
 
 
-There are three sighash flags: `ALL`, `NONE`, and `SINGLE`.
+有三种签名哈希标志：`ALL`、`NONE` 和 `SINGLE`。
 
-| Sighash flag | Description                                                  |
+| 签名哈希标志 | 描述                                                         |
 | ------------ | ------------------------------------------------------------ |
-| ALL          | Signature applies to all inputs and outputs                  |
-| NONE         | Signature applies to all inputs, none of the outputs         |
-| SINGLE       | Signature applies to all inputs but only the one output with the same index number as the signed input |
+| ALL          | 签名适用于所有输入和输出                                     |
+| NONE         | 签名适用于所有输入，但不适用于任何输出                       |
+| SINGLE       | 签名适用于所有输入，但只适用于与签名输入具有相同索引号的那个输出 |
 
-In addition, there is a modifier flag `ANYONECANPAY`, which can be combined with each of the preceding flags. When `ANYONECANPAY` is set, only one input is signed, leaving the rest inputs open for modification.
+此外，还有一个修饰符标志 `ANYONECANPAY`，可以与前面的每个标志组合使用。当设置了 `ANYONECANPAY` 时，只有一个输入被签名，其余输入可以被修改。
 
-| Sighash flag         | Description                                                  |
+| 签名哈希标志         | 描述                                                         |
 | -------------------- | ------------------------------------------------------------ |
-| ALL \| ANYONECANPAY    | Signature applies to one input and all outputs               |
-| NONE \| ANYONECANPAY   | Signature applies to one input, none of the outputs          |
-| SINGLE \| ANYONECANPAY | Signature applies to one input and the output with the same index number |
+| ALL \| ANYONECANPAY    | 签名适用于一个输入和所有输出                                 |
+| NONE \| ANYONECANPAY   | 签名适用于一个输入，但不适用于任何输出                       |
+| SINGLE \| ANYONECANPAY | 签名适用于一个输入和具有相同索引号的那个输出                 |
 
-All the six flags can be summarized in the following diagram.
+所有六种标志可以在下图中总结。
 
 ![img](/sCrypt/sighash-type-03.png)
 
-As described in the [doc](../how-to-write-a-contract/scriptcontext.md#sighash-type) before, different sighash type decides which part of the spending transaction is included in `ScriptContext`. More specifically, it will affect the value of four fields: `hashPrevouts`, `hashSequence`, `hashOutputs`, and `sigHashType`.
+正如之前在[文档](../how-to-write-a-contract/scriptcontext.md#sighash-type)中所描述的，不同的签名哈希类型决定了花费交易的哪些部分被包含在`ScriptContext`中。具体来说，它会影响四个字段的值：`hashPrevouts`、`hashSequence`、`hashOutputs`和`sigHashType`。
 
-| Field        | Description                                                  |
+| 字段         | 描述                                                         |
 | ------------ | ------------------------------------------------------------ |
-| hashPrevouts | If the `ANYONECANPAY` modifier is not set, it's double SHA256 of the serialization of all input outpoints. Otherwise, it's a `uint256` of `0x0000......0000`. |
-| hashSequence | If none of the `ANYONECANPAY`, `SINGLE`, `NONE` is set, it's double SHA256 of the serialization of sequence of all inputs. Otherwise, it's a `uint256` of `0x0000......0000`. |
-| hashOutputs  | If the sighash type is neither `SINGLE` nor `NONE`, it's double SHA256 of the serialization of all outputs. If the sighash type is `SINGLE` and the input index is smaller than the number of outputs, it's the double SHA256 of the output with the same index as the input. Otherwise, it's a `uint256` of `0x0000......0000`. |
-| sigHashType  | sighash type of the signature                                |
+| hashPrevouts | 如果没有设置`ANYONECANPAY`修饰符，它是所有输入outpoints序列化后的双重SHA256。否则，它是一个`uint256`的`0x0000......0000`。 |
+| hashSequence | 如果没有设置`ANYONECANPAY`、`SINGLE`、`NONE`中的任何一个，它是所有输入序列序列化后的双重SHA256。否则，它是一个`uint256`的`0x0000......0000`。 |
+| hashOutputs  | 如果签名哈希类型既不是`SINGLE`也不是`NONE`，它是所有输出序列化后的双重SHA256。如果签名哈希类型是`SINGLE`且输入索引小于输出数量，它是与输入索引相同的输出的双重SHA256。否则，它是一个`uint256`的`0x0000......0000`。 |
+| sigHashType  | 签名的签名哈希类型                                           |
 
-### Use Cases
+### 使用场景
 
-For a transaction signed with the default sighash `ALL`, it cannot be modified in any way. This is because the signature commits to all inputs and outputs of the transaction, if any part changes, the signature and thus the transactio becomes invalid. This is desirable in most cases, because the sender does not want others to temper with the signed transaction.
+对于使用默认签名哈希`ALL`签名的交易，它不能以任何方式被修改。这是因为签名承诺了交易的所有输入和输出，如果任何部分发生变化，签名和交易就会变得无效。在大多数情况下是合理的，因为发送者不希望其他人篡改已签名的交易。
 
-Let’s look at some examples using non-default sighash types.
+让我们看一些使用非默认签名哈希类型的例子。
 
-#### Crowdfunding
+#### 众筹
 
-Someone attempting to raise funds can construct a transaction with a single output. The single output pays a target amount to a fundraiser. Such a transaction is obviously invalid, as it has no inputs. Others can amend it by adding an input of their own, as a donation. They sign their own input with `ALL|ANYONECANPAY` and pass the partially signed transactions to the next donor. `ALL` ensures the output and thus the target and fundraiser cannot be modified. `ANYONECANPAY` ensures anyone can pay by adding new inputs without invalidating existing donors' signatures. Each donation is a "pledge" which cannot be collected by the fundraiser until the entire target amount is raised.
+试图筹集资金的人可以构建一个只有一个输出的交易。这个单一输出向筹款人支付目标金额。这样的交易显然是无效的，因为它没有输入。其他人可以通过添加自己的输入作为捐赠来修改它。他们使用`ALL|ANYONECANPAY`签名自己的输入，并将部分签名的交易传递给下一个捐赠者。`ALL`确保输出以及目标和筹款人不能被修改。`ANYONECANPAY`确保任何人都可以通过添加新的输入来支付，而不会使现有捐赠者的签名无效。每个捐赠都是一个"承诺"，在筹集到整个目标金额之前，筹款人无法收集。
 
-#### Blank Check
+#### 空白支票
 
-Someone attempting to write a blank check can construct a transaction with several inputs and no output, and sign all the inputs with `NONE`. The signatures only commit to inputs of the transaction. This allows anyone to add their desired outputs to the transaction to spend the funds in anyway she wants.
+试图开具空白支票的人可以构建一个有几个输入但没有输出的交易，并用`NONE`签名所有输入。签名只承诺交易的输入。这允许任何人向交易添加他们想要的输出，以任何方式花费资金。
 
-### How to generate a signature with a specific sighash
+### 如何生成具有特定签名哈希的签名
 
-For those contract public methods that require one or more signatures as input parameters, we can specify different sighash types for the signatures when calling it.
+对于那些需要一个或多个签名作为输入参数的合约公共方法，我们可以在调用它时为签名指定不同的签名哈希类型。
 
-Take the [P2PKH contract](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#method-with-signatures) as an example, it requires a single signature to `unlock`.
+以[P2PKH合约](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#method-with-signatures)为例，它需要一个单一签名来`unlock`。
 
 ```ts
 @method()
 public unlock(sig: Sig, pubkey: PubKey) {
-    // Check if the passed public key belongs to the specified address.
-    assert(pubKey2Addr(pubkey) == this.address, 'public key does not correspond to address')
-    // Check signature validity.
-    assert(this.checkSig(sig, pubkey), 'signature check failed')
+    // 检查传入的公钥是否属于指定地址。
+    assert(pubKey2Addr(pubkey) == this.address, '公钥与地址不对应')
+    // 检查签名有效性。
+    assert(this.checkSig(sig, pubkey), '签名验证失败')
 }
 ```
 
-There are two changes to specify a sighash type, which defaults to `ALL` if not specified explicitly.
+要指定签名哈希类型，需要进行两处更改，如果不明确指定，默认为 `ALL`。
 
-1. Pass a `SignatureOption` object to `pubKeyOrAddrToSign` to specify the sighash type.
-2. Pass the sighash as the third parameter of `findSig()`.
+1. 向 `pubKeyOrAddrToSign` 传递一个 `SignatureOption` 对象来指定签名哈希类型。
+2. 将签名哈希作为 `findSig()` 的第三个参数传递。
 
-Let's examine a usage example. Suppose we have the aforementioned `P2PKH` contract deployed, and we wish to call or unlock it. 
-However, we encounter an issue: we don't possess sufficient funds to cover the network fees for the new contract call transaction. Fortunately, a generous friend offers to cover these fees for us. 
-In this scenario, we can employ the `ANYONECANPAY | ALL` flag with our signature to unlock the deployed `P2PKH` contract. This allows our friend to append another input to our transaction, contributing funds to pay the network fee.
+让我们来看一个使用示例。假设我们已经部署了上述 `P2PKH` 合约，现在想要调用或解锁它。
+然而，我们遇到了一个问题：我们没有足够的资金来支付新的合约调用交易的网络费用。幸运的是，一位慷慨的朋友愿意为我们支付这些费用。
+在这种情况下，我们可以在签名中使用 `ANYONECANPAY | ALL` 标志来解锁已部署的 `P2PKH` 合约。这允许我们的朋友向我们的交易添加另一个输入，贡献资金来支付网络费用。
 
-To illustrate, we would structure the contract call as follows:
+为了说明这一点，我们可以按如下方式构建合约调用：
 ```ts
 const sighashType = SignatureHashType.ANYONECANPAY_ALL
 const { tx } = await p2pkh.methods.unlock(
-    // Pass the first parameter, the signature, to `unlock`.
-    // Once the transaction is signed, signatures are returned in `SignatureResponse[]`.
-    // Identify the required signature(s) using the public key, address, and the sighash type specified.
+    // 将第一个参数（签名）传递给 `unlock`。
+    // 一旦交易被签名，签名将以 `SignatureResponse[]` 的形式返回。
+    // 使用公钥、地址和指定的签名哈希类型来识别所需的签名。
     (sigResps) => findSig(sigResps, publicKey, sighashType), 
     PubKey(toHex(publicKey)),
     {
-        // Direct the signer to use the private key associated with `publicKey` and the specified sighash type to sign this transaction.
+        // 指示签名者使用与 `publicKey` 关联的私钥和指定的签名哈希类型来签署此交易。
         pubKeyOrAddrToSign: {
             pubKeyOrAddr: publicKey,
             sigHashType: sighashType,
         },
-        // This flag ensures the call tx is only created locally and not broadcasted.
+        // 此标志确保调用交易仅在本地创建而不广播。
         partiallySigned: true,
-        // Prevents automatic addition of fee inputs.
+        // 防止自动添加手续费输入。
         autoPayFee: false,
     } as MethodCallOptions<P2PKH>
 )
 ```
 
-Executing the above will yield the entire contract call transaction without broadcasting it. We can subsequently pass this transaction to our friend. Since we applied the `ANYONECANPAY` sighash flag, adding an additional input will not invalidate our signature. This is because network nodes will exclusively use the first input to authenticate our signature.
+执行上述代码将生成完整的合约调用交易，但不会广播它。随后我们可以将这个交易传递给我们的朋友。由于我们应用了`ANYONECANPAY`签名哈希标志，添加额外的输入不会使我们的签名失效。这是因为网络节点将只使用第一个输入来验证我们的签名。
 
-To further elaborate, we might also use the `ANYONECANPAY | SINGLE` flag. This would grant our friend the capability to append extra outputs to our transaction. This can be advantageous, for instance, if he wishes to reclaim a portion of his contributed funds as change, especially if he used an UTXO with an excessive amount of locked-in funds.
+进一步说明，我们也可以使用`ANYONECANPAY | SINGLE`标志。这将赋予我们的朋友向我们的交易添加额外输出的能力。这可能会很有用，例如，如果他希望收回部分贡献资金作为找零，特别是当他使用了一个锁定资金过多的UTXO时。
 
-You can find a full code example in our project [boilerplate](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/p2pkh-anyonecanpay.test.ts).
+你可以在我们的项目[boilerplate](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/p2pkh-anyonecanpay.test.ts)中找到完整的代码示例。
 
-## 2. Sighash Types in `@method()` Parameters
+## 2. `@method()` 参数中的签名哈希类型
 
-In this section, we will introduce how to specify different sighash types in the `@method()` decorator.
+在本节中，我们将介绍如何在 `@method()` 装饰器中指定不同的签名哈希类型。
 
+<<<<<<< HEAD
 :::tip `注意`
 Sighash here only affects contracts that access `ScriptContext` in their public methods.
 :::tip `注意`
+=======
+:::note
+这里的签名哈希只影响在其公共方法中访问 `ScriptContext` 的合约。
+:::note
+>>>>>>> 1f24e02b787acd2fb442d4ed58fd42c67bf4eba9
 
-### Counter
+### 计数器
 
-Let us use the [Counter](../how-to-write-a-contract/stateful-contract.md) contract as an example. It simply records how many times it has been called since deployment.
+让我们以 [计数器](../how-to-write-a-contract/stateful-contract.md) 合约为例。它简单地记录自部署以来被调用的次数。
 
-Noted that the `@method` [decorator](../how-to-write-a-contract/basics#method-decorator) takes a sighash type as a parameter, whose default is `ALL`. According to the [doc](../how-to-write-a-contract/scriptcontext.md#sighash-type),  `hashOutputs` is the double SHA256 of the serialization of **all outputs** when the sighash type is `ALL`. The [default calling transaction builder](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md#default-1) adds a change output when necessary. That's why we need to add a change output when building outputs of the spending transaction in the public method: we need to build all the outputs that are included in `hashOutputs`. Otherwise, contract call will fail.
+请注意，`@method` [装饰器](../how-to-write-a-contract/basics#method-decorator) 接受一个签名哈希类型作为参数，其默认值为 `ALL`。根据 [文档](../how-to-write-a-contract/scriptcontext.md#sighash-type)，当签名哈希类型为 `ALL` 时，`hashOutputs` 是**所有输出**序列化的双重 SHA256。[默认的调用交易构建器](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md#default-1) 在必要时会添加一个找零输出。这就是为什么我们在公共方法中构建花费交易的输出时需要添加一个找零输出：我们需要构建包含在 `hashOutputs` 中的所有输出。否则，合约调用将失败。
 
-The following [transaction](https://test.whatsonchain.com/tx/845f22b728deb23acacbc6f58f23ffde9c3e2be976e08c57f2bdcb417e3eacc5) is a contract calling transaction of `Counter`. As you can see, it contains two outputs: one for the new state, the other for change.
+以下 [交易](https://test.whatsonchain.com/tx/845f22b728deb23acacbc6f58f23ffde9c3e2be976e08c57f2bdcb417e3eacc5) 是 `Counter` 的一个合约调用交易。如你所见，它包含两个输出：一个用于新状态，另一个用于找零。
 
 ![img](/sCrypt/sighash-type-04.png)
 
-### Advanced Counter
+### 高级计数器
 
-Noted that in the state transition of `Counter`, there is always only one UTXO that contains the latest contract state. When the contract is called, it spends the UTXO of the current state and creates a UTXO of the new state. Moreover, the contract input index of the spending transaction and the contract output index are the same.
+请注意，在`Counter`的状态转换中，始终只有一个UTXO包含最新的合约状态。当合约被调用时，它会花费当前状态的UTXO并创建一个新状态的UTXO。此外，花费交易的合约输入索引和合约输出索引是相同的。
 
-In fact, we only care about the contract-related UTXO in the transaction inputs and outputs when calling Counter, and do not care about other inputs and outputs. Thus, we can use `SINGLE | ANYONECANPAY` to simplify the contract.
-`SINGLE` lets us focus on the contract output itself.
-`ANYONECANPAY` allows anyone to add inputs for this contract calling transaction to, e.g., pay fees.
+实际上，在调用Counter时，我们只关心交易输入和输出中与合约相关的UTXO，而不关心其他输入和输出。因此，我们可以使用`SINGLE | ANYONECANPAY`来简化合约。
+`SINGLE`让我们专注于合约输出本身。
+`ANYONECANPAY`允许任何人为这个合约调用交易添加输入，例如，用于支付费用。
 
+我们对原始Counter进行了两处修改。
 
-We make two changes to the original Counter.
-
-1. Using `@method(SigHash.ANYONECANPAY_SINGLE)`
-2. Build an `output` that only contains the contract's new state, without the change output.
+1. 使用`@method(SigHash.ANYONECANPAY_SINGLE)`
+2. 构建一个只包含合约新状态的`output`，不包括找零输出。
 
 ```ts
 export class AdvancedCounter extends SmartContract {
     ...
     
-    // 1) add ANYONECANPAY_SINGLE
+    // 1) 添加 ANYONECANPAY_SINGLE
     @method(SigHash.ANYONECANPAY_SINGLE)
     public incrementOnChain() {
         ...
         
         const amount: bigint = this.ctx.utxo.value
-        // 2) remove change output
+        // 2) 移除找零输出
         const output: ByteString = this.buildStateOutput(amount)
         assert(this.ctx.hashOutputs == hash256(output), 'hashOutputs mismatch')
     }
@@ -192,21 +197,21 @@ export class AdvancedCounter extends SmartContract {
 }
 ```
 
-You can check the [complete code here](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/advancedCounter.ts).
+您可以在[这里查看完整代码](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/advancedCounter.ts)。
 
-The following [transaction](https://test.whatsonchain.com/tx/e06d86f8d8b867c503eca799bb542b5f1d1f81aa75ad00ab4377d65764bef68c) is a contract calling transaction of `AdvancedCounter`. You can see it also contains two outputs, but we only use one output when checking if it hashes to `hashOutputs` in the public method, since we use `SINGLE`.
+以下[交易](https://test.whatsonchain.com/tx/e06d86f8d8b867c503eca799bb542b5f1d1f81aa75ad00ab4377d65764bef68c)是`AdvancedCounter`的一个合约调用交易。您可以看到它也包含两个输出，但由于我们使用了`SINGLE`，在公共方法中检查是否哈希到`hashOutputs`时，我们只使用了一个输出。
 
 ![img](/sCrypt/sighash-type-05.png)
 
-### More examples
+### 更多示例
 
-Use different sighash types in `@method()` decorator will change the value of `ScriptContext`. This is useful in many cases.
+在 `@method()` 装饰器中使用不同的签名哈希类型会改变 `ScriptContext` 的值。这在许多情况下都很有用。
 
-- If your contract needs to restrict all inputs and outputs of the spending transaction, use `ALL`.
-- If your contract is stateful and the state is always in a single output, simplify it using `SINGLE`.
-- If you want to enable someone else could add inputs after the transaction is sealed, such as for paying transaction fees, apply the `ANYONECANPAY` modifier.
+- 如果您的合约需要限制花费交易的所有输入和输出，请使用 `ALL`。
+- 如果您的合约是有状态的，并且状态始终在单个输出中，可以使用 `SINGLE` 来简化它。
+- 如果您希望在交易封装后允许其他人添加输入，例如用于支付交易费用，请应用 `ANYONECANPAY` 修饰符。
 
-You can find these examples in our [boilerplate](https://github.com/sCrypt-Inc/boilerplate).
+您可以在我们的 [boilerplate](https://github.com/sCrypt-Inc/boilerplate) 中找到这些示例。
 
 - [AnyoneCanSpend](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/acs.ts)
 - [Clone](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/clone.ts)

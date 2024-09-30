@@ -2,20 +2,25 @@
 sidebar_position: 8
 ---
 
-# Call Multiple Contracts in a Single Tx
+# 在单个tx中调用多个合约
 
-Up to now, we have only shown how to call one smart contract in a transaction. That is, only one input of the tx spends a smart contract UTXO, and the other inputs, if any, spend Pay-to-Public-Key-Hash ([P2PKH](https://learnmeabitcoin.com/guide/p2pkh)) UTXOs, which are generally NOT regarded as smart contracts.
+到目前为止，我们只展示了如何在单个tx中调用一个智能合约。也就是说，只有一个输入花费了一个智能合约UTXO，其他输入（如果有）花费了Pay-to-Public-Key-Hash ([P2PKH](https://learnmeabitcoin.com/guide/p2pkh)) UTXO，这些UTXO通常不被视为智能合约。
 
-There are cases where it is desirable to spend multiple smart contract UTXOs in different inputs of a tx.
+有时，我们希望在一个tx中花费多个智能合约UTXO。
 
-The main differences from [calling a single contract](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call) are:
+与[调用单个合约](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#contract-call)的主要区别是：
 
-1. Set `multiContractCall = true` in `MethodCallOptions`
-2. Each call may only return a partial/incomplete transaction, instead of a complete transaction
-3. A partial tx has to be passed as `ContractTransaction` in `MethodCallOptions` in subsequent calls
-4. Finally invoke `SmartContract.multiContractCall(partialContractTx: ContractTransaction, signer: Signer)` to sign and broadcast the complete transaction
+1. 在`MethodCallOptions`中设置`multiContractCall = true`
+2. 每个调用只能返回一个部分/不完整的交易，而不是一个完整的交易
+3. 一个部分的交易必须作为一个`ContractTransaction`在后续的调用中传递
+4. 最后调用`SmartContract.multiContractCall(partialContractTx: ContractTransaction, signer: Signer)`来签名和广播完整的交易
 
+<<<<<<< HEAD
 The following is an [example code](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/multi_contracts_call.test.ts) of calling two contracts at the same time:
+=======
+
+以下是一个[示例代码](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/multi_contracts_call.test.ts)，展示了如何在同一时间调用两个合约：
+>>>>>>> 1f24e02b787acd2fb442d4ed58fd42c67bf4eba9
 
 ```ts
 import { Counter } from '../../src/contracts/counter'
@@ -29,10 +34,10 @@ async function main() {
     const signer = getDefaultSigner()
     let counter = new Counter(1n)
 
-    // connect to a signer
+    // 连接到signer
     await counter.connect(signer)
 
-    // contract deployment
+    // 合约部署
     const deployTx = await counter.deploy(1)
     console.log('Counter contract deployed: ', deployTx.id)
 
@@ -43,9 +48,9 @@ async function main() {
             options: MethodCallOptions<Counter>,
             ...args: any
         ): Promise<ContractTransaction> => {
-            // create the next instance from the current
+            // 从当前合约创建下一个合约实例
             const nextInstance = current.next()
-            // apply updates on the next instance locally
+            // 在本地合约实例上应用更新
             nextInstance.count++
 
             const tx = new bsv.Transaction()
@@ -76,7 +81,7 @@ async function main() {
 
     const hashPuzzle = new HashPuzzle(sha256Data)
 
-    // connect to a signer
+    // 连接到signer
     await hashPuzzle.connect(signer)
 
     const deployTx1 = await hashPuzzle.deploy(1)
@@ -130,7 +135,7 @@ async function main() {
 
     console.log('Counter, HashPuzzle contract `unlock` called: ', callTx.id)
 
-    // hashPuzzle has terminated, but counter can still be called
+    // hashPuzzle 已终止，但 counter 仍然可以被调用
     counter = nexts[0].instance
 }
 
@@ -140,6 +145,13 @@ await main()
 
 :::tip `注意`
 
+<<<<<<< HEAD
 - You must bind a [transaction builder](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#tx-builders) to each contract instance, since [the default](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md#customize-1) only spends a single contract UTXO.
 - If the called contracts need signatures from different private keys to be called, the signer passed to `multiContractCall` must have all private keys.
+=======
+
+:::note
+- 你必须为每个合约实例绑定一个[transaction builder](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#tx-builders)，因为[默认的](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md#customize-1)只花费一个合约UTXO。
+- 如果被调用的合约需要来自不同私钥的签名，则传递给`multiContractCall`的signer必须拥有所有私钥。
+>>>>>>> 1f24e02b787acd2fb442d4ed58fd42c67bf4eba9
 :::

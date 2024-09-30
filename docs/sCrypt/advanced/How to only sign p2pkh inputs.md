@@ -2,19 +2,19 @@
 sidebar_position: 10
 ---
 
-# How to Sign P2PKH Inputs Using the Signer Class
+# 如何使用Signer类仅签名P2PKH输入
 
-In certain scenarios, it is necessary to sign only P2PKH inputs when working with transactions in sCrypt. This documentation will guide you through the process of utilizing the **`Signer`** class to achieve this.
+在某些场景中，在sCrypt中使用交易时，可能需要仅签名P2PKH输入。本指南将指导您如何使用**`Signer`**类实现这一点。
 
-## Prerequisites
+## 先决条件
 
-Before proceeding, make sure you have a basic understanding of the sCrypt. library and have set up the required dependencies.
+在继续之前，请确保您对sCrypt库有一个基本的了解，并设置所需的依赖项。
 
-## Implementation
+## 实现
 
-### 1. Initialize a UTXO for P2PKH
+### 1. 初始化P2PKH的UTXO
 
-Start by defining a P2PKH Unspent Transaction Output (UTXO) that you intend to use for your transaction:
+首先，定义一个您打算用于交易的P2PKH未花费交易输出（UTXO）：
 
 ```ts
 const utxo = {
@@ -25,68 +25,67 @@ const utxo = {
 };
 ```
 
-### 2. Add the P2PKH UTXO to the Transaction
+### 2. 将P2PKH UTXO添加到交易中
 
-Use the from() method to add the P2PKH UTXO to your transaction. This marks the input as a P2PKH input:
+使用from()方法将P2PKH UTXO添加到您的交易中。这将标记输入为P2PKH输入：
 
 ```ts
 tx.from(utxo);
 ```
 
-### 3. Verify Input Script Before Signing
+### 3. 在签名之前验证输入脚本
 
-Before signing the transaction, ensure that the input script is empty. This can be done with the following code:
+在签名交易之前，确保输入脚本为空。可以使用以下代码完成：
 
 ```ts
-console.log(tx.inputs[2].script.toASM()); // Empty, no signature
+console.log(tx.inputs[2].script.toASM()); // 空的，没有签名
 ```
 
-### 4. Sign the Transaction
+### 4. 签名交易
 
-Use the Signer class to sign the transaction:
+使用Signer类签名交易：
 
 ```ts
 const signer = getDefaultSigner();
 await signer.signTransaction(tx);
 ```
 
-### 5. Verify Input Script After Signing
+### 5. 验证签名后的输入脚本
 
-After signing, confirm that the input script now contains the signature and public key:
+签名后，确认输入脚本现在包含签名和公钥：
 
 ```ts
-console.log(tx.inputs[2].script.toASM()); // Should contain signature and pubkey
+console.log(tx.inputs[2].script.toASM()); // 应该包含签名和公钥
 ```
 
-### Example Implementation
+### 示例实现
 
-Here is a simplified example demonstrating the steps above within a transaction :
+以下是一个简化示例，演示了上述步骤：
 
 ```ts
 const tx = new bsv.Transaction();
-// Add inputs, outputs, and other transaction details as needed
+// 添加输入、输出和其他交易细节
 
-// Add P2PKH UTXO
+// 添加P2PKH UTXO
 tx.from(utxo);
 
-// Verify input script before signing
-console.log(tx.inputs[2].script.toASM()); // Empty, no signature
+// 验证输入脚本
+console.log(tx.inputs[2].script.toASM()); // 空的，没有签名
 
-// Sign the transaction
+// 签名交易
 const signer = getDefaultSigner();
 await signer.signTransaction(tx);
 
-// Verify input script after signing
-console.log(tx.inputs[2].script.toASM()); // Should contain signature and pubkey
+// 验证签名后的输入脚本
+console.log(tx.inputs[2].script.toASM()); // 应该包含签名和公钥
 
 .................................
 .................................
 
-// Finalize the transaction
+// 完成交易
 const finalizedTx = tx.build();
 ```
 
-## Conclusion
+## 结论
 
-By following these steps, your transaction sign only P2PKH inputs using the **`Signer`** class in sCrypt. If you encounter any issues or have specific requirements, 
-please refer to the [sCrypt slack channel](https://app.slack.com/client/TLSHKFH5Y/CLSHPUZC3) to seek further assistance.
+通过这些步骤，您可以在sCrypt中使用**`Signer`**类仅签名P2PKH输入。如果您遇到任何问题或具有特定要求，请参考[sCrypt slack频道](https://app.slack.com/client/TLSHKFH5Y/CLSHPUZC3)以寻求进一步帮助。

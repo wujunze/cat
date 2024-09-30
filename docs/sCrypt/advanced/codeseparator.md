@@ -7,6 +7,7 @@ sidebar_position: 5
 ## 代码分隔符的工作原理
 
 在比特币签名中，签名的内容是 [序列化的 ScriptContext](../how-to-write-a-contract/scriptcontext.md#serialization)，其格式如下：
+
 ![img](/sCrypt/codeseparator-01.png)
 
 Part 5, `scriptCode`, 通常包含整个智能合约，即锁定脚本。唯一的例外是当存在 [OP_CODESEPARATOR](https://wiki.bitcoinsv.io/index.php/OP_CODESEPARATOR) (OCS) 时。当验证签名时，`scriptCode` 是锁定脚本，但删除了从最后一个执行的 OCS 开始的所有内容。
@@ -55,7 +56,7 @@ export class CodeSeparator extends SmartContract {
 ### 生成签名
 
 当使用 `OP_CODESEPARATOR` 时，我们需要改变获取签名的方式。这是因为通常情况下，签名覆盖整个锁定脚本，而不是删除 OCS 之前的所有内容。我们可以通过传递 `insertCodeSeparator` 的索引作为方法调用参数来指定哪个 `OP_CODESEPARATOR` 划分锁定脚本。
-Let's take a look at an example for the smart contract above:
+让我们来看一个上述智能合约的示例：
 
 ```ts
 // 创建一个签名选项数组，每个签名选项对应一个单独的公钥。

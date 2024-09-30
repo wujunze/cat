@@ -2,45 +2,45 @@
 sidebar_position: 4
 ---
 
-# How to Debug ScriptContext Failure
+# 如何调试 ScriptContext 失败
 
 
-[ScriptContext](../how-to-write-a-contract/scriptcontext.md) enables the logic of the contract to be executed correctly according to the agreement, and the state of the contract to be propagated correctly.
+[ScriptContext](../how-to-write-a-contract/scriptcontext.md) 使合约的逻辑能够按照协议正确执行，并确保合约的状态能够正确传播。
 
-When it runs incorrectly, you need to master the following methods to locate the error more efficiently.
+当它运行不正确时,你需要掌握以下方法来更高效地定位错误。
 
 
-## hashOutputs assertion failed
+## hashOutputs 断言失败
 
-The `hashOutputs` field of `ScriptContext` is the double SHA256 of the serialization of all output amount (8-byte little endian) with scriptPubKey. Through it, we can agree on how the outputs of the transaction calling the contract should be constructed.
+`ScriptContext` 的 `hashOutputs` 字段是所有输出金额（8字节小端序）与 scriptPubKey 序列化后的双重 SHA256。通过它，我们可以就如何构造调用合约的交易输出达成一致。
 
-If the output of the transaction is not constructed as required by the contract, then the `hashOutputs` of `ScriptContext` field will not match the the double SHA256 of the `outputs` produced in the code when the contract runs. The following assertion will fail:
+如果交易的输出没有按照合约要求构造，那么 `ScriptContext` 的 `hashOutputs` 字段将与合约运行时代码中产生的 `outputs` 的双重 SHA256 不匹配。以下断言将失败：
 
 ```ts
 assert(this.ctx.hashOutputs == hash256(outputs), 'hashOutputs mismatch')
 ```
 
-We all know that if the preimage of the hash is inconsistent, the hash value will not match. When an assertion failure occurs, we can only see two mismatched hash values, and cannot visually see the difference between the preimages of the two hash values (that is, the `outputs` in the contract and the outputs of the transaction).
+我们都知道，如果哈希的原像不一致，哈希值就不会匹配。当断言失败发生时，我们只能看到两个不匹配的哈希值，无法直观地看到两个哈希值原像之间的差异（即合约中的 `outputs` 和交易的输出）。
 
 
-A function `diffOutputs` in DebugFunctions Interface is provided to directly compare the difference between the outputs argument and all the outputs of the transaction bound by `this.to`, which are serialized and hashed to produce the `hashOutputs` field of `ScriptContext`.
+DebugFunctions 接口中提供了一个 `diffOutputs` 函数，用于直接比较 outputs 参数与绑定到 `this.to` 的交易的所有输出之间的差异。这些输出经过序列化和哈希处理后生成 `ScriptContext` 的 `hashOutputs` 字段。
 
-Just call `this.debug.diffOutputs(outputs)` in the contract:
+只需在合约中调用 `this.debug.diffOutputs(outputs)`：
 
 ```ts
-this.debug.diffOutputs(outputs) // diff and print the comparison result
+this.debug.diffOutputs(outputs) // 比较并打印差异结果
 assert(this.ctx.hashOutputs == hash256(outputs), 'hashOutputs mismatch')
 ```
 
-and you will see the comparison result:
+你将看到比较结果：
 
 ![diffoutputs](/sCrypt/how-to-debug-scriptcontext-01.png)
 
 
-If the outputs of the transaction is inconsistent with the outputs expected by the contract:
+如果交易的输出与合约预期的输出不一致:
 
-1. Outputs of the transaction is marked green.
-2. Outputs expected by the contract is marked red.
-3. Identical parts are marked in gray.
+1. 交易的输出标记为绿色。
+2. 合约预期的输出标记为红色。
+3. 相同的部分标记为灰色。
    
-Through the printed comparison results, we can intuitively see that the number of satoshis included in the output calculated in the contract is different from the number of satoshis included in the output actually added when constructing the transaction. Now, we have found the source of the error.
+通过打印的比较结果,我们可以直观地看到合约中计算的输出中包含的聪数与构建交易时实际添加的输出中包含的聪数不同。现在,我们已经找到了错误的来源。
