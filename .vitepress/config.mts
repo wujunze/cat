@@ -25,6 +25,11 @@ function nav(): DefaultTheme.NavItem[] {
           activeMatch: "/CAT-Protocol/cat721",
         },
         {
+            text: "Dapps",
+            link: "/CAT-Protocol/dapps",
+            activeMatch: "/CAT-Protocol/dapps",
+        },
+        {
           text: "参考实现",
           link: "/CAT-Protocol/impl",
           activeMatch: "/CAT-Protocol/impl",
@@ -45,6 +50,7 @@ function sidebarCAT(): DefaultTheme.SidebarItem[] {
     { text: "方法概述", link: "overview" },
     { text: "CAT20", link: "cat20" },
     { text: "CAT721", link: "cat721" },
+    { text: "Dapps", link: "dapps" },
     { text: "参考实现", link: "impl" },
   ];
 }
@@ -95,6 +101,23 @@ function sidebarSCrypt(): DefaultTheme.SidebarItem[] {
     { text: "如何将合约发布到 NPM", link: "how-to-publish-a-contract" },
     { text: "如何验证合约", link: "how-to-verify-a-contract" },
     { text: "以太坊开发者的sCrypt", link: "ethereum-devs" },
+    {
+      text: "高级",
+      collapsed: false,
+      items: [
+        { text: "如何集成sCrypt服务", link: "advanced/how-to-integrate-scrypt-service" },
+        { text: "签名哈希类型", link: "advanced/sighash-type" },
+        { text: "在sCrypt中使用脚本", link: "advanced/inline-asm" },
+        { text: "使用代码分隔符", link: "advanced/codeseparator" },
+        { text: "如何添加一个provider", link: "advanced/how-to-add-a-provider" },
+        { text: "如何添加一个signer", link: "advanced/how-to-add-a-signer" },
+        { text: "在单个tx中调用多个合约", link: "advanced/how-to-call-multiple-contracts" },
+        { text: "时间锁", link: "advanced/timeLock" },
+        { text: "如何使用Signer类仅签名P2PKH输入", link: "advanced/How to only sign p2pkh inputs" },
+        { text: "如何构建预言机服务", link: "advanced/how-to-build-an-oracle-service" },
+        { text: "如何调试 ScriptContext 失败", link: "advanced/how-to-debug-scriptcontext" },
+      ]
+    },
   ];
 }
 // https://vitepress.dev/reference/site-config
