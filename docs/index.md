@@ -41,7 +41,6 @@ features:
   --vp-home-hero-image-filter: blur(44px);
 }
 
-
 @media (min-width: 640px) {
   :root {
     --vp-home-hero-image-filter: blur(56px);
@@ -52,5 +51,46 @@ features:
   :root {
     --vp-home-hero-image-filter: blur(68px);
   }
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="footer-content">
+  <div class="social-links">
+    <a href="https://x.com/Coder333_" target="_blank"><i class="fab fa-twitter"></i></a>
+    <a href="https://t.me/+PWwcrZugOcllMzhh" target="_blank"><i class="fab fa-telegram"></i></a>
+    <a href="https://catscan.coder3.dev/" target="_blank"><i class="fas fa-search"></i></a>
+  </div>
+
+  <div class="copyright">
+    &copy; 2024 CAT Protocol 中文网. All rights reserved.
+  </div>
+</div>
+
+<style>
+.footer-content {
+  margin-top: 8rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+.social-links {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.social-links a {
+  display: inline-block;
+  margin: 0 15px;
+  font-size: 28px;
+  color: #888;
+  transition: color 0.3s ease;
+}
+.social-links a:hover {
+  color: #41d1ff;
+}
+.copyright {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
 }
 </style>
