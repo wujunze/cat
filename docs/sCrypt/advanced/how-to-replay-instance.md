@@ -8,33 +8,33 @@ sidebar_position: 10
 
 ```ts
 const currentInstance = await Scrypt.contractApi.getLatestInstance(
-    Counter,
-    contractId
-)
+  Counter,
+  contractId
+);
 ```
 
 然而，这种方法对于具有[HashedMap](../how-to-write-a-contract/built-ins.md#hashedmap)或[HashedSet](../how-to-write-a-contract/built-ins.md#hashedset)类型的状态的智能合约无效。这是因为每个实例仅包含哈希值，而不是原始值。
 
 在本节中，我们将使用位于`src/contracts/crowdfundReplay.ts`的[contract CrowdfundReplay](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/crowdfundReplay.ts)作为参考，解释如何将这些合约实例重放到其最新状态。
 
-这个众筹合约包含一个`donators`类型的HashedMap，记录了捐赠者的公钥及其相应的捐赠数量。
+这个众筹合约包含一个`donators`类型的 HashedMap，记录了捐赠者的公钥及其相应的捐赠数量。
 
 ```ts
 export type Donators = HashedMap<PubKey, bigint>
 
 export class CrowdfundReplay extends SmartContract {
-	
+
 	@prop(true)
 	donators: Donators
-	
+
 	...
 }
 ```
 
 这个合约有三个公共方法：
 
-- `donate` 将一个条目添加到HashedMap。
-- `refund` 从map中删除一个特定的捐赠者。
+- `donate` 将一个条目添加到 HashedMap。
+- `refund` 从 map 中删除一个特定的捐赠者。
 - `collect` 销毁合约而不更新任何状态属性。
 
 ```ts
@@ -92,31 +92,22 @@ class CrowdfundReplay extends SmartContract {
 }
 ```
 
-<<<<<<< HEAD
-:::tip `注意`
-The object keys must match the public method names precisely.
-=======
 :::note
 对象的键必须与公共方法名称完全匹配。
->>>>>>> 1f24e02b787acd2fb442d4ed58fd42c67bf4eba9
 :::
 
 在我们的例子中，我们只需要两个辅助函数，因为`collect`方法不会更改任何状态属性。
 
 ## 第二步. 从部署交易创建实例
 
-使用合约ID检索部署交易，然后从部署交易中[恢复](../how-to-write-a-contract/built-ins.md#fromtx)合约实例。
+使用合约 ID 检索部署交易，然后从部署交易中[恢复](../how-to-write-a-contract/built-ins.md#fromtx)合约实例。
 
 ```ts
 // 从部署交易中恢复合约实例
-const tx = await provider.getTx(contractId.txId)
-const instance = CrowdfundReplay.fromTx(
-    tx,
-    contractId.outputIndex,
-    {
-        donators: new HashedMap<PubKey, bigint>(),
-    }
-)
+const tx = await provider.getTx(contractId.txId);
+const instance = CrowdfundReplay.fromTx(tx, contractId.outputIndex, {
+  donators: new HashedMap<PubKey, bigint>(),
+});
 ```
 
 **注意**: 有关`fromTx()`和`getTransaction()`函数工作原理的更多详细信息，请参阅[此处](../how-to-write-a-contract/built-ins.md#fromtx)的文档。

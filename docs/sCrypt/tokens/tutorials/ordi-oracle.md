@@ -5,13 +5,14 @@ sidebar_position: 5
 # 教程 5: Ordinals 预言机
 
 ## 概述
-比特币智能合约可以决定UTXO中的satoshis是否有效，但不能直接确定UTXO中的[1SatOrdinals](https://docs.1satordinals.com/)代币是否有效。通过检查UTXO，合约可以知道其中有多少satoshis，因为它们是由矿工在链上验证的。然而，合约无法确定其中有多少Ordinals代币或是否包含特定的NFT，因为它们是由链外的外部索引器验证的，而不是矿工。在许多实际应用中，验证交易输入中携带的Ordinals代币是必要的，例如代币交换和代币销售。必须引入[预言机](../../tutorials/oracle.md)来为调用合约时所需的Ordinals代币的真实性和完整性提供额外的验证。
 
-本教程将介绍如何使用[WitnessOnChain](https://api.witnessonchain.com)预言机来验证引用包含Ordinals NFT和BSV20代币的UTXO的交易输入。
+比特币智能合约可以决定 UTXO 中的 satoshis 是否有效，但不能直接确定 UTXO 中的[1SatOrdinals](https://docs.1satordinals.com/)代币是否有效。通过检查 UTXO，合约可以知道其中有多少 satoshis，因为它们是由矿工在链上验证的。然而，合约无法确定其中有多少 Ordinals 代币或是否包含特定的 NFT，因为它们是由链外的外部索引器验证的，而不是矿工。在许多实际应用中，验证交易输入中携带的 Ordinals 代币是必要的，例如代币交换和代币销售。必须引入[预言机](https://docs.sctypt.io/tutorials/oracle.md)来为调用合约时所需的 Ordinals 代币的真实性和完整性提供额外的验证。
+
+本教程将介绍如何使用[WitnessOnChain](https://api.witnessonchain.com)预言机来验证引用包含 Ordinals NFT 和 BSV20 代币的 UTXO 的交易输入。
 
 ## WitnessOnChain API
 
-WitnessOnChain提供了一个[API](https://api.witnessonchain.com/#/v1/V1Controller_getInscription)来从一个outpoint获取inscription详情。
+WitnessOnChain 提供了一个[API](https://api.witnessonchain.com/#/v1/V1Controller_getInscription)来从一个 outpoint 获取 inscription 详情。
 
 ```
 https://api.witnessonchain.com/v1/inscription/bsv/{network}/outpoint/{txid}/{vout}
@@ -19,15 +20,15 @@ https://api.witnessonchain.com/v1/inscription/bsv/{network}/outpoint/{txid}/{vou
 
 响应中签名的消息结构如下：
 
-| 名称      | 类型       | 字节数 | 描述                                       |
-| --------- | ---------- | ----- | -------------------------------------------- |
-| marker    | bigint     | 1     | api marker, always be 4n                     |
-| timestamp | bigint     | 4     | timestamp, little-endian                     |
-| network   | bigint     | 1     | network type, 1n for mainnet, 0n for testnet |
-| outpoint  | ByteString | 36    | txid + output index, both in little-endian   |
-| fungible  | bigint     | 1     | token type, 1n for BSV20, 0n for NFT         |
-| amt       | bigint     | 8     | token amount, little endian                  |
-| id        | ByteString | >=66  | inscription id                               |
+| 名称      | 类型       | 字节数 | 描述                                         |
+| --------- | ---------- | ------ | -------------------------------------------- |
+| marker    | bigint     | 1      | api marker, always be 4n                     |
+| timestamp | bigint     | 4      | timestamp, little-endian                     |
+| network   | bigint     | 1      | network type, 1n for mainnet, 0n for testnet |
+| outpoint  | ByteString | 36     | txid + output index, both in little-endian   |
+| fungible  | bigint     | 1      | token type, 1n for BSV20, 0n for NFT         |
+| amt       | bigint     | 8      | token amount, little endian                  |
+| id        | ByteString | >=66   | inscription id                               |
 
 根据这个结构，我们可以定义一个自定义类型 `Msg` 和一个辅助解析函数。
 
