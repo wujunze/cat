@@ -98,7 +98,7 @@ You read an instance's properties using the dot operator, like any other object.
 console.log(counter.count)
 ```
 
-:::note
+:::tip `注意`
 Reading does NOT broadcast a transaction to the blockchain.
 :::
 
@@ -160,7 +160,7 @@ const subscription = Scrypt.contractApi.subscribe({
 });
 ```
 
-:::note
+:::tip `注意`
 When using this API, you do not need any backend services of your own; the code usually runs in your users' browsers. There is a security issue because of exposure of your API key. So it’s highly recommended that you just use it in demo projects for trusted users.
 :::
 

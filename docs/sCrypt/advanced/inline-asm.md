@@ -80,6 +80,6 @@ p2pkh.setAsmVars(asmVarValues)
 Full code can be found on [GitHub](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/asmDemo.ts).
 For more information about inline script/assembly, please refer to [here](https://scryptdoc.readthedocs.io/en/latest/asm.html).
 
-:::note
+:::tip `注意`
 Inline script bypasses many features of sCrypt such as type checking. Extreme caution has to be taken when using this advanced feature.
 :::

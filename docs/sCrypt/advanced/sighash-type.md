@@ -145,9 +145,9 @@ You can find a full code example in our project [boilerplate](https://github.com
 
 In this section, we will introduce how to specify different sighash types in the `@method()` decorator.
 
-:::note
+:::tip `注意`
 Sighash here only affects contracts that access `ScriptContext` in their public methods.
-:::note
+:::tip `注意`
 
 ### Counter
 

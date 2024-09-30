@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # 脚本语境
 
-在 UTXO 模型中，验证智能合约的上下文是包含它的 UTXO 和花费它的交易，包括它的输入和输出。在以下示例中，当 `tx1` 的第二个输入花费 `tx0` 的第二个输出时（3 个输入和 3 个输出），智能合约的上下文大致是包含它的 UTXO 和 `tx1` 中被圈出的部分。
+在 UTXO 模型中，验证智能合约的上下文是包含它的 UTXO 和花费它的交易，包括它的输入和输出。在以下示例中，当 `tx1` 的第二个输入是 `tx0` 的第二个输出时（3 个输入和 3 个输出），智能合约的上下文大致是包含它的 UTXO 和 `tx1` 中被圈出的部分。
 
 ![scriptContext](/sCrypt/scriptcontext-01.png)
 
@@ -33,7 +33,7 @@ export interface ScriptContext {
   locktime: bigint,
   // 此输入使用的 SIGHASH 标志
   sigHashType: SigHashType,
-  // 获取整个序列化的 sighash 预图像
+  // 获取整个序列化的 sighash 原像
   serialize(): SigHashPreimage,
 }
 
@@ -196,7 +196,7 @@ sighash type of the signature (4-byte little endian)
 
 [Source](https://github.com/bitcoin-sv/bitcoin-sv/blob/master/doc/abc/replay-protected-sighash.md#digest-algorithm)
 
-一个值得注意的应用是序列化预图像在创建自定义 SigHash 标志中的应用。一个例子是 [SIGHASH_ANYPREVOUT](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/sighashAnyprevout.ts#L34)，它展示了这一过程。
+一个值得注意的应用是序列化原像在创建自定义 SigHash 标志中的应用。一个例子是 [SIGHASH_ANYPREVOUT](https://github.com/sCrypt-Inc/boilerplate/blob/master/src/contracts/sighashAnyprevout.ts#L34)，它展示了这一过程。
 
 ### 调试
 

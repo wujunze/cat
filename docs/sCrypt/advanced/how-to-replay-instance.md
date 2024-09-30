@@ -92,7 +92,7 @@ class CrowdfundReplay extends SmartContract {
 }
 ```
 
-:::note
+:::tip `注意`
 The object keys must match the public method names precisely.
 :::
 

@@ -145,7 +145,7 @@ len(s2) // 5
 
 - `reverseByteString(b: ByteString, size: number): ByteString` 返回 `b` 的 `size` 字节反转字节。当在 `little-endian` 和 `big-endian` 之间转换数字时，它通常很有用。
 
-:::note
+:::tip `注意`
 `size` 必须是一个 [编译时常量](./basics#compile-time-constant).
 :::
 

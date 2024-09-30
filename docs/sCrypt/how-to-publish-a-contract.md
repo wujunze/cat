@@ -10,7 +10,7 @@ sidebar_position: 9
 
 智能合约库与智能合约的不同之处在于：
 
-* 智能合约库不能有任何公共/入口 `@method`s，这意味着库不能通过 tx 直接部署或调用。它们只能在一个智能合约或另一个库中调用。
+* 智能合约库不能有任何公共/入口 `@method`，这意味着库不能通过 tx 直接部署或调用。它们只能在一个智能合约或另一个库中调用。
 
 * 智能合约库不能有任何状态属性，即 `@prop(true)` 属性。但一个声明为 `@prop()` 的属性是可以的。
 
@@ -42,7 +42,7 @@ class MyLib extends SmartContractLib {
 }
 ```
 
-一个智能合约库可以声明为一个扩展 `SmartContractLib` 的类。它可能具有与智能合约相同的 `@prop`s 和 `@method`s，就像具有相同规则的智能合约一样。智能合约库可以在 `@method`s 中使用，如下所示：
+一个智能合约库可以声明为一个扩展 `SmartContractLib` 的类。它可能具有与智能合约相同的 `@prop`s 和 `@method`，就像具有相同规则的智能合约一样。智能合约库可以在 `@method` 中使用，如下所示：
 
 ```ts
 class MyContract extends SmartContract {

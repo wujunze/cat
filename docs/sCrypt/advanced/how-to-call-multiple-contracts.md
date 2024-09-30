@@ -15,9 +15,7 @@ The main differences from [calling a single contract](../how-to-deploy-and-call-
 3. A partial tx has to be passed as `ContractTransaction` in `MethodCallOptions` in subsequent calls
 4. Finally invoke `SmartContract.multiContractCall(partialContractTx: ContractTransaction, signer: Signer)` to sign and broadcast the complete transaction
 
-
 The following is an [example code](https://github.com/sCrypt-Inc/boilerplate/blob/master/tests/multi_contracts_call.test.ts) of calling two contracts at the same time:
-
 
 ```ts
 import { Counter } from '../../src/contracts/counter'
@@ -140,10 +138,8 @@ await main()
 
 ```
 
+:::tip `注意`
 
-
-:::note
 - You must bind a [transaction builder](../how-to-deploy-and-call-a-contract/how-to-deploy-and-call-a-contract.md#tx-builders) to each contract instance, since [the default](../how-to-deploy-and-call-a-contract/how-to-customize-a-contract-tx.md#customize-1) only spends a single contract UTXO.
 - If the called contracts need signatures from different private keys to be called, the signer passed to `multiContractCall` must have all private keys.
 :::
-

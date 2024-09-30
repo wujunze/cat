@@ -98,7 +98,7 @@ static readonly UINT_MAX = 0xffffffffn
 
 一个智能合约必须有一个显式的 `constructor()` 如果它至少有一个 `@prop` 不是 `static` 的。
 
-The `super` method **must** 必须 在构造函数中调用，并且构造函数的所有参数都应该传递给 `super`
+`super` 方法 **必须** 在构造函数中调用，并且构造函数的所有参数都应该传递给 `super`
 在相同的顺序中，作为它们传递到构造函数中。例如，
 
 ```ts
@@ -121,13 +121,13 @@ class A extends SmartContract {
 
 ```
 
-[`arguments`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments) 是一个包含传递给该函数的参数值的数组。`...` 是 [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)。
+[`arguments`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments) 是一个包含传递给该函数的参数值的数组。`...` 是 [展开语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_syntax)。
 
 ## 方法
 
 与属性一样，智能合约还可以有两种方法：
 
-1. 用 `@method` 装饰器装饰的方法：这些方法只能调用 **用 `@method` 装饰的方法或下面指定的函数**。此外，**只能访问用 `@prop` 装饰的属性**。
+1. 用 `@method` 装饰器装饰的方法：这些方法只能调用 **通过 `@method` 装饰的方法或下面指定的函数**。此外，**只能访问用 `@prop` 装饰的属性**。
 
 2. 没有 `@method` 装饰器的方法：这些方法只是常规的 TypeScript 类方法。
 
@@ -136,11 +136,11 @@ class A extends SmartContract {
 1. 使用此装饰器标记任何打算在链上运行的方法。
 2. 它接受一个 [sighash 标志](./scriptcontext.md#sighash-type) 作为参数。
 
-### 公开 `@method`s
+### 公开 `@method`
 
-每个合约 **必须** 至少有一个公共 `@method`。它用 `public` 修饰符表示，不返回任何值。它在合约之外可见，并作为合约的主要方法（类似于 C 和 Java 中的 `main`）。
+每个合约 **必须** 至少有一个公开 `@method`。它用 `public` 修饰符表示，不返回任何值。它在合约之外可见，并作为合约的主要方法（类似于 C 和 Java 中的 `main`）。
 
-一个公共 `@method` 可以从外部事务中调用。如果它在没有违反任何条件的情况下运行完成，则调用成功 [assert()](./built-ins.md#assert). 一个例子如下。
+一个公开 `@method` 可以从外部事务中调用。如果它在没有违反任何条件的情况下运行完成，则调用成功 [assert()](./built-ins.md#assert). 一个例子如下。
 
 ```ts
 @method()
@@ -152,9 +152,7 @@ public unlock(x: bigint, y: bigint) {
 
 #### 结束规则
 
-一个公共 `@method` 方法 **必须** 在所有可达的代码路径中以 `assert()` 结束。[^1]
-
-[^1]: `console.log()` calls will be ignored when verifying the above rule.
+一个公开 `@method` 方法 **必须** 在所有可达的代码路径中以 `assert()` 结束。`console.log()` 调用将在验证上述规则时被忽略。
 
 一个详细的例子如下。
 
@@ -195,13 +193,13 @@ class PublicMethodDemo extends SmartContract {
 
   @method()
   public foo() {
-    // 无效，每个公共方法的最后一条语句应该是一个 `assert()` 语句
+    // 无效，每个公开方法的最后一条语句应该是一个 `assert()` 语句
   }
 
   @method()
   public foo() {
     assert(true);
-    return 1n;  // 无效，因为公共方法不能返回任何值
+    return 1n;  // 无效，因为公开方法不能返回任何值
   }
 
   @method()
@@ -233,7 +231,7 @@ class PublicMethodDemo extends SmartContract {
 }
 ```
 
-### 非公开 `@method`s
+### 非公开 `@method`
 
 没有 `public` 修饰符，一个 `@method` 是内部的，并且不能直接从外部事务中调用。
 
@@ -309,7 +307,7 @@ class MethodsDemo extends SmartContract {
 
 ### 基本类型
 
-#### boolean
+#### `boolean`
 
 一个简单的值 `true` 或 `false`.
 
@@ -333,7 +331,7 @@ const hugeHex: bigint = BigInt("0x1fffffffffffff")
 
 #### `ByteString`
 
-在智能合约上下文中（即在 `@method`s 或 `@prop`s 中），一个 `ByteString` 表示一个字节数组。
+在智能合约上下文中（即在 `@method` 或 `@prop`s 中），一个 `ByteString` 表示一个字节数组。
 
 一个字面量 `string` 可以转换为 `ByteString` 使用函数 `toByteString(literal: string, isUtf8: boolean = false): ByteString`:
 
@@ -364,11 +362,11 @@ let c = true
 toByteString('world', c) // 无效，没有将布尔字面量传递给第二个参数
 ```
 
-`ByteString` has the following operators and methods:
+`ByteString` 具有以下运算符和方法：
 
-* `==` / `===`: compare
+* `==` / `===`: 比较
 
-* `+`: concatenate
+* `+`: 连接
 
 ```ts
 const str0 = toByteString('01ab23ef68')
@@ -386,7 +384,7 @@ str0 + str1
 
 #### `number`
 
-类型 `number` 不允许在 `@prop`s 和 `@method`s 中使用，除非在以下情况下。我们可以使用 `Number()` 函数将 `bigint` 转换为 `number`。
+类型 `number` 不允许在 `@prop`s 和 `@method` 中使用，除非在以下情况下。我们可以使用 `Number()` 函数将 `bigint` 转换为 `number`。
 
 * 数组索引
 
@@ -410,7 +408,7 @@ for (let i: number = 0 i < 10 i++) {
 
 所有数组 **必须** 是固定大小的，并声明为类型 `FixedArray<T, SIZE>`，其 `SIZE` 必须是一个 [CTC](#compile-time-constant) 描述后面。
 
-TypeScript 中声明的常见数组 `T[]` 或 `Array<T>` 不允许在 `@prop`s 和 `@method`s 中使用，因为它们是动态大小的。
+TypeScript 中声明的常见数组 `T[]` 或 `Array<T>` 不允许在 `@prop`s 和 `@method` 中使用，因为它们是动态大小的。
 
 ```ts
 let aaa: FixedArray<bigint, 3> = [1n, 3n, 3n]
@@ -425,6 +423,7 @@ let abb: FixedArray<FixedArray<bigint, 2>, 3> = [[1n, 3n], [1n, 3n], [1n, 3n]]
 
 :::tip `注意`
 一个 `FixedArray` 在链上和链下行为不同，当作为函数参数传递时。它在链下 *按引用传递*，作为常规的 TypeScript/JavaScript 数组，而在链上 *按值传递*。因此，强烈建议不要在函数中修改 `FixedArray` 参数的元素。
+:::
 
 ```ts
 class DemoContract extends SmartContract {
@@ -470,7 +469,7 @@ assert(arrayA[0] = 0n)
 
 #### `type` or `interface`
 
-用户可以使用 `type` 或 `interface` 来最好地定义自定义类型，这些类型由基本类型组成。[^2]
+用户可以使用 `type` 或 `interface` 来最好地定义自定义类型，这些类型由基本类型组成。一个用户定义的类型在链上按值传递，在链下按引用传递，与 `FixedArray` 相同。因此，强烈建议不要在函数中修改参数的 `field`，该参数是用户定义的类型。
 
 ```ts
 type ST = {
@@ -505,8 +504,6 @@ function printCoord(pt: Point2) {
 }
 
 ```
-
-[^2]: 一个用户定义的类型在链上按值传递，在链下按引用传递，与 `FixedArray` 相同。因此，强烈建议不要在函数中修改参数的 `field`，该参数是用户定义的类型。
 
 #### `enum`
 
@@ -642,11 +639,11 @@ import type {
 
 ## 语句
 
-在 `@method`s 中，除了 [变量声明](#variable-declarations) 之外，还有一些约束。
+在 `@method` 中，除了 [变量声明](#variable-declarations) 之外，还有一些约束。
 
 ### 变量声明
 
-变量可以在 `@method`s 中通过关键字 `const` / `var` / `let` 声明，就像在普通的 TypeScript 中一样。
+变量可以在 `@method` 中通过关键字 `const` / `var` / `let` 声明，就像在普通的 TypeScript 中一样。
 
 ```ts
 let a : bigint = 1n
@@ -690,7 +687,7 @@ for (let i = 0; i < M; i++) { ... }
 :::
 
 ```ts
-// emulate break
+// 模拟 break
 let x = 3n
 let done = false
 for (let i = 0; i < 3; i++) {
@@ -867,7 +864,7 @@ export class MyLib extends SmartContractLib {
 
 ### 白名单函数
 
-默认情况下，所有 Javascript/TypeScript 内置函数和全局变量都不允许在 `@method`s 中使用，除了以下几种。
+默认情况下，所有 Javascript/TypeScript 内置函数和全局变量都不允许在 `@method` 中使用，除了以下几种。
 
 #### `console.log`
 
@@ -903,7 +900,7 @@ static add(a: bigint, b: bigint): bigint {
 | `<` | 小于 |
 | `<=` | 小于或等于 |
 | `&&` | 逻辑与 |
-| <code>&#124;&#124;</code> | 逻辑或 |
+| `\|\|` | 逻辑或 |
 | `!` | 逻辑非 |
 | `cond ? expr1 : expr2` | 三元运算符 |
 | `+=` | 加并赋值 |
@@ -912,6 +909,6 @@ static add(a: bigint, b: bigint): bigint {
 | `/=` | 除并赋值 |
 | `%=` | 取余并赋值 |
 
-:::note
+:::tip `注意`
 `**` 目前不支持。
 :::
