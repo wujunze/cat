@@ -6,28 +6,28 @@ function nav(): DefaultTheme.NavItem[] {
       items: [
         {
           text: "简介",
-          link: "/CAT-Procotol/cat-procotol",
-          activeMatch: "/CAT-Procotol/cat-procotol",
+          link: "/CAT-Protocol/cat-protocol",
+          activeMatch: "/CAT-Protocol/cat-protocol",
         },
         {
           text: "方法概述",
-          link: "/CAT-Procotol/overview",
-          activeMatch: "/CAT-Procotol/overview",
+          link: "/CAT-Protocol/overview",
+          activeMatch: "/CAT-Protocol/overview",
         },
         {
           text: "CAT20",
-          link: "/CAT-Procotol/cat20",
-          activeMatch: "/CAT-Procotol/cat20",
+          link: "/CAT-Protocol/cat20",
+          activeMatch: "/CAT-Protocol/cat20",
         },
         {
           text: "CAT721",
-          link: "/CAT-Procotol/cat721",
-          activeMatch: "/CAT-Procotol/cat721",
+          link: "/CAT-Protocol/cat721",
+          activeMatch: "/CAT-Protocol/cat721",
         },
         {
           text: "参考实现",
-          link: "/CAT-Procotol/impl",
-          activeMatch: "/CAT-Procotol/impl",
+          link: "/CAT-Protocol/impl",
+          activeMatch: "/CAT-Protocol/impl",
         },
       ],
     },
@@ -41,7 +41,7 @@ function nav(): DefaultTheme.NavItem[] {
 
 function sidebarCAT(): DefaultTheme.SidebarItem[] {
   return [
-    { text: "简介", link: "cat-procotol" },
+    { text: "简介", link: "cat-protocol" },
     { text: "方法概述", link: "overview" },
     { text: "CAT20", link: "cat20" },
     { text: "CAT721", link: "cat721" },
@@ -100,15 +100,15 @@ function sidebarSCrypt(): DefaultTheme.SidebarItem[] {
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: "zh-CN",
-  title: "CAT Procotol 中文网",
+  title: "CAT Protocol 中文网",
   description: "全面学习了解CAT Protocol的最强学习社区",
   srcDir: "docs",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: nav(),
     sidebar: {
-      "/CAT-Procotol/": {
-        base: "/CAT-Procotol/",
+      "/CAT-Protocol/": {
+        base: "/CAT-Protocol/",
         items: sidebarCAT(),
       },
       "/sCrypt/": {
