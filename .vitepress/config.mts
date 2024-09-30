@@ -103,6 +103,9 @@ export default defineConfig({
   title: "CAT Protocol 中文网",
   description: "全面学习了解CAT Protocol的最强学习社区",
   srcDir: "docs",
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }]
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: nav(),
