@@ -272,7 +272,7 @@ main()
 PRIVATE_KEY=xxxxx
 ```
 
-如果您没有私钥，可以按照 [这个指南](../../how-to-deploy-and-call-a-contract/faucet) 使用 Yours Wallet 生成一个，然后使用我们的 [水龙头](https://scrypt.io/faucet/) 为私钥的地址提供资金。
+如果您没有私钥，可以按照 [这个指南](../how-to-deploy-and-call-a-contract/faucet) 使用 Yours Wallet 生成一个，然后使用我们的 [水龙头](https://scrypt.io/faucet/) 为私钥的地址提供资金。
 
 运行以下命令部署合约。
 

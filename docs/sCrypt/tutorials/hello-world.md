@@ -9,7 +9,7 @@ sidebar_position: 1
 
 在本教程中，我们将介绍如何创建一个“Hello World”智能合约，部署它并调用它。
 
-在开始之前，请确保已安装所有[先决条件工具](../../installation)。
+在开始之前，请确保已安装所有[先决条件工具](../installation)。
 
 ## 创建一个新项目
 
@@ -83,7 +83,7 @@ npx scrypt-cli compile --watch
 提供的命令中的 `watch` 选项在 sCrypt 编译过程中连续监控错误。
 Watch 模式允许用户观察与 sCrypt 相关的任何错误，这些错误与 TypeScript 错误不同。
 
-![](../../static/img/watch.gif)
+![watch.gif](/sCrypt/watch.gif)
 
 ## Contract Deployment & Call
 
@@ -93,7 +93,7 @@ Watch 模式允许用户观察与 sCrypt 相关的任何错误，这些错误与
 npm run genprivkey
 ```
 
-then follow the [faucet instructions](../../how-to-deploy-and-call-a-contract/faucet) to fund the key.
+then follow the [faucet instructions](../how-to-deploy-and-call-a-contract/faucet) to fund the key.
 
 接下来，开始部署和调用合约：
 
@@ -139,16 +139,16 @@ npx ts-node deploy.ts
 
 您将看到如下输出：
 
-![](../../static/img/hello-world-deploy-and-call-output.png)
+![img](/sCrypt/hello-world-deploy-and-call-output.png)
 
 
 您可以使用 WhatsOnChain 区块链浏览器查看 [部署交易](https://test.whatsonchain.com/tx/b10744292358eda2cfae3baae5cd486e30136b086011f7953aed9098f62f4245)：
 
-![](../../static/img/hello-world-contract-deploy-tx.png)
+![img](/sCrypt/hello-world-contract-deploy-tx.png)
 
 
 您还可以查看 [调用交易](https://test.whatsonchain.com/tx/f28175616b6dd0ebe2aad41505aabb5bf2864e2e6d1157168183f51b6194d3e6)：
 
-![](../../static/img/hello-world-contract-call-tx.png)
+![img](/sCrypt/hello-world-contract-call-tx.png)
 
 恭喜！您已经成功部署并调用了您的第一个比特币智能合约。
