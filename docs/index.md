@@ -21,9 +21,13 @@ features:
     details: 契约认证代币（CAT）协议
     link: /CAT-Protocol/cat-protocol
   - icon: 🐉
-    title: sCrypt
+    title: sCrypt 中文文档
     details: 适用于比特币兼容区块链的全栈 Web3 开发平台
     link: /sCrypt/overview
+  - icon: ⚗️
+    title: Fractal Bitcoin中文文档
+    details: 是一个比特币原生扩容解决方案
+    link: /fractalbitcoin/welcome
 ---
 <style>
 :root {
