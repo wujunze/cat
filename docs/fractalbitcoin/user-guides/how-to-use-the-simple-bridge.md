@@ -10,7 +10,7 @@ Simple Bridge 由 UniSat 开发，是一个旨在安全高效地连接不同协�
 
 ### **了解 Simple Bridge 规则**
 
-* 在开始之前，请确保熟悉 [Simple Bridge 规则](/fractalbitcoin/doc/simple-bridge-rules.md)。
+* 在开始之前，请确保熟悉 [Simple Bridge 规则](https://docs.unisat.io/fractal-services/simple-bridge-cross-chain-asset-transfers)。
 
 ### **设置 Fractal Bitcoin 钱包**
 

@@ -19,11 +19,11 @@ Bool Bridge 允许在主链和 Fractal 之间以 BRC-20 代币的形式转移 BT
 
 ![](/fractalbitcoin/fractal-56.avif)
 
-**第三步**：确保您的浏览器已安装 UniSat 钱包。您可以通过 [https://unisat.io/download](https://unisat.io/download) 或 Chrome 网上应用店下载。
+**第三步**：确保您的浏览器已安装 UniSat 钱包。您可以通过 [https://unisat.io/download](https://unisat.io/download) 或 [Chrome 网上应用店](https://chromewebstore.google.com/detail/unisat-wallet/ppbibelpcjmhbdihakflkdcoccbgbkpo?pli=1)下载。
 
 *请确保：*
 🔶 *使用最新版本的扩展程序*
-🔶 *使用 Taproot 钱包。在[这里](wallet-addresses-link)了解不同类型的钱包地址。*
+🔶 *使用 Taproot 钱包。在[这里](https://docs.unisat.io/services/unisat-wallet/unisat-wallet-address-type)了解不同类型的钱包地址。*
 
 ![](/fractalbitcoin/fractal-57.avif)
 

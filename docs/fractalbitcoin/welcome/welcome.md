@@ -17,13 +17,6 @@ Fractal 不仅仅是另一个层级解决方案——它是一种理念。我们
 
 探索文档，连接社区，成为比特币扩容未来的一部分。让我们共同书写比特币创新的新篇章。
 
-## 快速入门
-
-1. [开发者指南](/fractalbitcoin/developer-home/developer-home.md)
-2. [代币经济学](/fractalbitcoin/welcome-to-the-fractal-documentation/fractal-tokenomics.md)
-3. [技术文档](/Fractal/Fractal.md)
-4. [常见问题](/sCrypt/faq.md)
-
 ## 官方资源与社区
 
 - 官网：[https://fractalbitcoin.io](https://fractalbitcoin.io)

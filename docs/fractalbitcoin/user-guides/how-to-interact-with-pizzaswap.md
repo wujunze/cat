@@ -8,7 +8,7 @@ PizzaSwap 是首个同时在比特币和 Fractal 上构建的去中心化交易�
 
 * PizzaSwap 兼容 **原生隔离见证（P2WPKH）** 和 **Taproot（P2TR）** 地址。请确保您的钱包配置使用这些地址格式之一。
 * 交易费用以 **bSats/sSats 和 bFB/sFB** 支付。
-* 更多关于 PizzaSwap 的详细信息，请点击链接：[www.fractalbitcoin.io/updates/pizzaswap-launch](www.fractalbitcoin.io/updates/pizzaswap-launch)
+* 更多关于 PizzaSwap 的详细信息，请点击链接：[https://www.fractalbitcoin.io/updates/pizzaswap-launch](https://www.fractalbitcoin.io/updates/pizzaswap-launch)
 
 ---
 
