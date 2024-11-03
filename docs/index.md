@@ -62,6 +62,7 @@ features:
 
 <div class="footer-content">
   <div class="social-links">
+    <a href="https://github.com/wujunze/cat" target="_blank"><i class="fab fa-github"></i></a>
     <a href="https://x.com/Coder333_" target="_blank"><i class="fab fa-twitter"></i></a>
     <a href="https://t.me/+PWwcrZugOcllMzhh" target="_blank"><i class="fab fa-telegram"></i></a>
     <a href="https://catscan.coder3.dev/" target="_blank"><i class="fas fa-search"></i></a>
